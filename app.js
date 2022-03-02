@@ -16,7 +16,7 @@ var data;
 var db = mysql.createConnection({
   // host: entvar.parsed.DB_HOST,
   // user: entvar.parsed.DB_USER,
-  // password: entvar.parsed.DB_PASS,
+  //password: entvar.parsed.DB_PASS,
   host: 'localhost',
   user: 'sammy',
   //user: 'jorge',
@@ -34,7 +34,7 @@ db.connect((err) => {
   });
 
 const app = express();
-
+app.use(express.json())
 //create database
 app.get('/createdb',(req,res) =>{
     let sql = 'CREATE DATABASE nodemysql';
@@ -103,7 +103,7 @@ app.get('/home', (req,res) => {
   let query = db.query(sql,(err, results) =>{
     if(err) throw err;
     console.log(results);
-    res.send(results);
+    res.send(results[0]);
   });
 });
 
