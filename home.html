@@ -11,7 +11,15 @@
     <h1>prueba diseño</h1>
     <p id="data"></p>
     <script>
-
+        const route = document.getElementById('data')
+        const getdata = async() => {
+            const response = await fetch('/home')
+            const json = await response.json()
+            route.innerHTML = `${json.latitud} ${json.longitud} ${json.fecha} ${json.hora}`
+            
+            console.log("probando"+json)
+        } 
+        setInterval(getdata,3000)
     </script>
  
 </body>
