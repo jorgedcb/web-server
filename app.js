@@ -2,7 +2,7 @@ const express = require('express')
  const mysql = require('mysql');
  var dgram = require('dgram');
 var port = 5000;
-var router = express.Router();
+
 //  //Variables de entorno
 // dotenv = require('dotenv')
 // const entvar = dotenv.config()
@@ -107,7 +107,7 @@ app.get('/home', (req,res) => {
   });
 });
 
-router.get("/", function(req, res) {
+app.get("/", function(req, res) {
   // console.log("hello I'm on the start page");
 res.render("index");
 });
