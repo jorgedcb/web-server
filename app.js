@@ -2,7 +2,7 @@ const express = require('express')
  const mysql = require('mysql');
  var dgram = require('dgram');
 var port = 5000;
-
+var router = express.Router();
 //  //Variables de entorno
 // dotenv = require('dotenv')
 // const entvar = dotenv.config()
@@ -98,13 +98,18 @@ app.get('/getposts', (req,res) => {
   });
 });
 
-app.get('/', (req,res) => {
+app.get('/home', (req,res) => {
   let sql = 'SELECT * FROM mytable ORDER BY id DESC LIMIT 1';
   let query = db.query(sql,(err, results) =>{
     if(err) throw err;
     console.log(results);
     res.send(results);
   });
+});
+
+router.get("/", function(req, res) {
+  // console.log("hello I'm on the start page");
+res.render("index");
 });
 
 socket = dgram.createSocket('udp4');
@@ -161,7 +166,7 @@ server.on('connection', function(socket) {
         console.log(datagps);
         var time = datagps[1].split(' ')
         var coordenadas = datagps[0].split('-')
-        let post = {latitud:coordenadas[0], longitud:coordenadas[1], fecha:time[0], hora:time[1]};
+        let post = {latitud:coordenadas[0], longitud:'-'+coordenadas[1], fecha:time[0], hora:time[1]};
         let sql = 'INSERT INTO mytable set ?';
         let query = db.query(sql, post,(err, result) => {
           if(err) throw err;
