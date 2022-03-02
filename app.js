@@ -1,7 +1,7 @@
 const express = require('express')
  const mysql = require('mysql');
  var dgram = require('dgram');
- var port = 5000;
+var port = 5000;
 
 //  //Variables de entorno
 // dotenv = require('dotenv')
@@ -20,7 +20,9 @@ var db = mysql.createConnection({
   host: 'localhost',
   user: 'sammy',
   password: 'password',
+//password: 'castilla74',
   database: 'nodemysql'
+  
 });
 
 db.connect((err) => {
@@ -52,6 +54,17 @@ app.get('/createpoststable', (req, res) => {
   });
 });
 
+// create table
+app.get('/creategpstable', (req, res) => {
+  // let sql = 'CREATE TABLE mytable(id int AUTO_INCREMENT, latitud VARCHAR(255), longitud VARCHAR(255), fecha DATE, hora TIME, PRIMARY KEY(id))';
+  let sql = 'CREATE TABLE mytable(id int AUTO_INCREMENT, latitud VARCHAR(255), longitud VARCHAR(255), fecha VARCHAR(255), hora VARCHAR(255), PRIMARY KEY(id))';
+  db.query(sql, (err,result) =>{
+    if(err) throw err;
+    console.log(result);
+    res.send('mytable created...');
+  });
+});
+
 app.get('/addpost1', (req, res) => {
   let post = {title:'Post One', body:'This is post number one'};
   let sql = 'INSERT INTO posts set ?';
@@ -62,8 +75,30 @@ app.get('/addpost1', (req, res) => {
   })
 });
 
+app.get('/additem', (req, res) => {
+  datagps = "10.981133-74.8378764;02-03-2022 10:42:23".split(";")
+  var time = datagps[1].split(' ')
+  var coordenadas = datagps[0].split('-')
+  let post = {latitud:coordenadas[0], longitud:coordenadas[1], fecha:time[0], hora:time[1]};
+  let sql = 'INSERT INTO mytable set ?';
+  let query = db.query(sql, post,(err, result) => {
+    if(err) throw err;
+    console.log(result)
+    res.send('Post added')
+  })
+});
+
 app.get('/getposts', (req,res) => {
-  let sql = 'SELECT * FROM posts';
+  let sql = 'SELECT * FROM posts ORDER BY id DESC LIMIT 1';
+  let query = db.query(sql,(err, results) =>{
+    if(err) throw err;
+    console.log(results);
+    res.send(results);
+  });
+});
+
+app.get('/', (req,res) => {
+  let sql = 'SELECT * FROM mytable ORDER BY id DESC LIMIT 1';
   let query = db.query(sql,(err, results) =>{
     if(err) throw err;
     console.log(results);
@@ -76,13 +111,16 @@ socket = dgram.createSocket('udp4');
 socket.on('message', function (msg, info){
     datagps = msg.toString()
     console.log(datagps);
-    let post = {title:'Post One', body:datagps};
-    let sql = 'INSERT INTO posts set ?';
+    var time = datagps[1].split(' ')
+    var coordenadas = datagps[0].split('-')
+    let post = {latitud:coordenadas[0], longitud:coordenadas[1], fecha:time[0], hora:time[1]};
+    let sql = 'INSERT INTO mytable set ?';
     let query = db.query(sql, post,(err, result) => {
       if(err) throw err;
       console.log(result)
+      res.send('Post added')
     })
- });
+  });
 
 socket.on('listening', function(){
     var address = socket.address();
