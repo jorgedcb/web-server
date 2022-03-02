@@ -18,8 +18,8 @@ var db = mysql.createConnection({
   // user: entvar.parsed.DB_USER,
   // password: entvar.parsed.DB_PASS,
   host: 'localhost',
-  user: 'jorge',
-  password: 'castilla74',
+  user: 'sammy',
+  password: 'password',
   database: 'nodemysql'
 });
 
