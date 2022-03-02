@@ -109,7 +109,7 @@ app.get('/home', (req,res) => {
 
 app.get("/", function(req, res) {
   // console.log("hello I'm on the start page");
-res.render("index");
+res.sendFile("home.html");
 });
 
 socket = dgram.createSocket('udp4');
