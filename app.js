@@ -155,7 +155,18 @@ server.on('connection', function(socket) {
     // The server can also receive data from the client by reading from its socket.
     socket.on('data', function(chunk) {
         //console.log('Data received from client: ${chunk.toString()}');
-        console.log('Data received from client:'+chunk.toString());
+        //console.log('Data received from client:'+chunk.toString());
+
+        datagps = chunk.toString().split(';')
+        console.log(datagps);
+        var time = datagps[1].split(' ')
+        var coordenadas = datagps[0].split('-')
+        let post = {latitud:coordenadas[0], longitud:coordenadas[1], fecha:time[0], hora:time[1]};
+        let sql = 'INSERT INTO mytable set ?';
+        let query = db.query(sql, post,(err, result) => {
+          if(err) throw err;
+          console.log("mesage insetado")
+        })  
     });
 
     // When the client requests to end the TCP connection with the server, the server
