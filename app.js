@@ -120,7 +120,6 @@ socket.on('message', function (msg, info){
     let query = db.query(sql, post,(err, result) => {
       if(err) throw err;
       console.log(result)
-      res.send('Post added')
     })
   });
 
