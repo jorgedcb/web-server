@@ -18,9 +18,10 @@ var db = mysql.createConnection({
   // user: entvar.parsed.DB_USER,
   // password: entvar.parsed.DB_PASS,
   host: 'localhost',
-  user: 'sammy',
-  password: 'password',
-//password: 'castilla74',
+  //user: 'sammy',
+  user: 'jorge',
+  //password: 'password',
+  password: 'castilla74',
   database: 'nodemysql'
   
 });
@@ -128,8 +129,47 @@ socket.on('listening', function(){
 
 socket.bind(port);
 
+// Include Nodejs' net module.
+const Net = require('net');
+// The port on which the server is listening.
+const port_tcp = 6000;
 
- 
+// Use net.createServer() in your code. This is just for illustration purpose.
+// Create a new TCP server.
+const server = new Net.Server();
+// The server listens to a socket for a client to make a connection request.
+// Think of a socket as an end point.
+server.listen(port_tcp, function() {
+    console.log(`Server listening for connection requests on socket localhost:${port_tcp}`);
+});
+
+// When a client requests a connection with the server, the server creates a new
+// socket dedicated to that client.
+server.on('connection', function(socket) {
+    console.log('A new connection has been established.');
+
+    // Now that a TCP connection has been established, the server can send data to
+    // the client by writing to its socket.
+    socket.write('Hello, client.');
+
+    // The server can also receive data from the client by reading from its socket.
+    socket.on('data', function(chunk) {
+        //console.log('Data received from client: ${chunk.toString()}');
+        console.log('Data received from client:'+chunk.toString());
+    });
+
+    // When the client requests to end the TCP connection with the server, the server
+    // ends the connection.
+    socket.on('end', function() {
+        console.log('Closing connection with the client');
+    });
+
+    // Don't forget to catch error, for your own sake.
+    socket.on('error', function(err) {
+        console.log(`Error: ${err}`);
+    });
+});
+
 app.listen('3000', () => {
     console.log('server started on port 3000')
 });
