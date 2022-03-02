@@ -1,8 +1,7 @@
 const express = require('express')
  const mysql = require('mysql');
  var dgram = require('dgram');
-const { time } = require('console');
- var port = 5000;
+var port = 5000;
 
 //  //Variables de entorno
 // dotenv = require('dotenv')
@@ -21,8 +20,7 @@ var db = mysql.createConnection({
   host: 'localhost',
   user: 'sammy',
   password: 'password',
-  // user: 'jorge',
-  // password: 'castilla74',
+//password: 'castilla74',
   database: 'nodemysql'
   
 });
