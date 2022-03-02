@@ -1,5 +1,7 @@
- const express = require('express')
+const express = require('express')
  const mysql = require('mysql');
+ var dgram = require('dgram');
+ var port = 5000;
 
 //  //Variables de entorno
 // dotenv = require('dotenv')
@@ -69,61 +71,28 @@ app.get('/getposts', (req,res) => {
   });
 });
 
+socket = dgram.createSocket('udp4');
+
+socket.on('message', function (msg, info){
+    datagps = msg.toString()
+    console.log(datagps);
+    let post = {title:'Post One', body:datagps};
+    let sql = 'INSERT INTO posts set ?';
+    let query = db.query(sql, post,(err, result) => {
+      if(err) throw err;
+      console.log(result)
+    })
+ });
+
+socket.on('listening', function(){
+    var address = socket.address();
+    console.log("listening on :" + address.address + ":" + address.port);
+});
+
+socket.bind(port);
+
 
  
 app.listen('3000', () => {
     console.log('server started on port 3000')
 });
-
-
-
-// var express = require("express");
-// var path = require("path");
-
-// var routes = require("./routes");
-
-// var app = express();
-
-// var dgram = require('dgram');
-// var port_udp = 5000;
-// var  DatosGPS = "Global Variable";
-
-// app.set("port", process.env.PORT || 3000);
-// app.set("views", path.join(__dirname, "views"));
-// app.set("view engine", "ejs");
-
-// socket = dgram.createSocket('udp4');
-
-// socket.on('message', function (msg, info){
-//     console.log(msg.toString());
-    
-//     DatosGPS= msg.toString()
-//  });
- 
-
-
-// socket.on('listening', function(){
-//     var address = socket.address();
-//     console.log("listening on :" + address.address + ":" + address.port);
-// });
-
-// socket.bind(port_udp);
-
-
-// var express = require("express");
-
-// var router = express.Router();
-
-
-// router.get("/", function(req, res) {
-//    // console.log("hello I'm on the start page");
-// res.render("index",{DatosGPS});
-// });
-
-// module.exports = router;
-// // app.use(routes);
-
-// app.listen(app.get("port"), function(){
-//     console.log("Server started on port " + app.get("port"));
-// })
-
