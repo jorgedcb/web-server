@@ -109,7 +109,7 @@ app.get('/', (req,res) => {
 socket = dgram.createSocket('udp4');
 
 socket.on('message', function (msg, info){
-    datagps = msg.toString()
+    datagps = msg.toString().split(';')
     console.log(datagps);
     var time = datagps[1].split(' ')
     var coordenadas = datagps[0].split('-')
@@ -117,7 +117,7 @@ socket.on('message', function (msg, info){
     let sql = 'INSERT INTO mytable set ?';
     let query = db.query(sql, post,(err, result) => {
       if(err) throw err;
-      console.log(result)
+      console.log("mesage insetado")
     })
   });
 
