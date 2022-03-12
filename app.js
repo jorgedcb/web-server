@@ -102,7 +102,7 @@ app.get('/home', (req,res) => {
   let sql = 'SELECT * FROM mytable ORDER BY id DESC LIMIT 1';
   let query = db.query(sql,(err, results) =>{
     if(err) throw err;
-    console.log(results);
+    //console.log(results);
     res.send(results[0]);
   });
 });
