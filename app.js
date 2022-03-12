@@ -62,7 +62,7 @@ app.get('/creategpstable', (req, res) => {
   db.query(sql, (err,result) =>{
     if(err) throw err;
     console.log(result);
-    res.send('mytable created...');
+    res.send('my table created...');
   });
 });
 
