@@ -170,7 +170,7 @@ server.on('connection', function(socket) {
         let sql = 'INSERT INTO mytable set ?';
         let query = db.query(sql, post,(err, result) => {
           if(err) throw err;
-          console.log("mesage insetado")
+          console.log("mensaje insetado")
         })  
     });
 
