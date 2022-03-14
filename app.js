@@ -17,12 +17,12 @@ var db = mysql.createConnection({
   // host: entvar.parsed.DB_HOST,
   // user: entvar.parsed.DB_USER,
   //password: entvar.parsed.DB_PASS,
-  host: 'localhost',
-  user: 'sammy',
+  host: 'diseno.cr8cosserlpi.us-east-1.rds.amazonaws.com',
+  user: 'jorge',
   //user: 'jorge',
-  password: 'password',
+  password: 'castilla74',
   //password: 'castilla74',
-  database: 'nodemysql'
+  database: 'diseno'
   
 });
 
