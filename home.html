@@ -46,7 +46,8 @@
             Console.log(typeof(latitud))
             Console.log((longitud))
             Console.log((latitud))
-          L.marker([latitud, longitud]).addTo(map);
+         L.marker.setLatLng([10.976029412029105, -74.80355101913315], 12)
+
         } 
         setInterval(getdata,3000)
     
@@ -54,7 +55,8 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-       
+       L.marker([latitud, longitud]).addTo(map);
+        } 
         
         
             
