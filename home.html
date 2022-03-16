@@ -42,10 +42,10 @@
             
             console.log("probando",json)
             latitud=parseFloat(json.latitud);
-            longitud=-parseFloat(json.longitud);
+            longitud=parseFloat(json.longitud);
          //marker.setLatLng([11.019326, -74.8515549])
-            marker.setLatLng([latitud,longitud])
-          route.innerHTML = `${json.latitud} ${longitud} ${json.fecha} ${json.hora}`
+            marker.setLatLng([latitud,-longitud])
+          route.innerHTML = `${json.latitud} ${-longitud} ${json.fecha} ${json.hora}`
 
         } 
         
