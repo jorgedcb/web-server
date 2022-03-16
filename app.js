@@ -119,7 +119,9 @@ socket.on('message', function (msg, info){
     console.log(datagps);
     var time = datagps[1].split(' ')
     var coordenadas = datagps[0].split('-')
-    let post = {latitud:coordenadas[0], longitud:coordenadas[1], fecha:time[0], hora:time[1]};
+    let lon = '-'
+    let long = lon.concat(coordenadas[1])
+    let post = {latitud:coordenadas[0], longitud:long, fecha:time[0], hora:time[1]};
     let sql = 'INSERT INTO mytable set ?';
     let query = db.query(sql, post,(err, result) => {
       if(err) throw err;
