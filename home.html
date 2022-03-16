@@ -11,21 +11,28 @@
    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
    crossorigin=""/>
+ 
 </head>
  
 <body>
+  
     <h1>prueba diseño</h1>
     <p id="data"></p>
-  <div id="myMap" style="height: 600px"></div>
+  
+
+
+
+    <div id="myMap" style="height: 600px"></div>
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-    crossorigin=""></script>
-    <script type="
-    text/javascript">
+    crossorigin=""></script> 
+
+    
+    <script type="text/javascript">
         var latitud=0;
         var longitud=0;
-        
+
         const route = document.getElementById('data')
         const getdata = async() => {
             const response = await fetch('/home')
@@ -33,21 +40,24 @@
             route.innerHTML = `${json.latitud} ${json.longitud} ${json.fecha} ${json.hora}`
             
             console.log("probando"+json)
-
             latitud=parseFloat(json.latitud);
             longitud=parseFloat(json.longitud);
+        } 
+        setInterval(getdata,3000)
+    
+        var map = L.map('myMap').setView([latitud, longitud], 13);     
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        L.marker([latitud, longitud]).addTo(map);
         
-            var map = L.map('myMap').setView([latitud, longitud], 13);
-           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-           }).addTo(map);
-           L.marker([latitud, longitud]).addTo(map);
-           } 
-           setInterval(getdata,3000);
-
-
-
         
-    </script>
- 
+            
+</script>
+<p>Cosas que pasan 2 </p>
+
+       
+    </div>
+   
+    
 </body>
