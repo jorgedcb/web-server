@@ -36,19 +36,20 @@
 
             latitud=parseFloat(json.latitud);
             longitud=parseFloat(json.longitud);
-        } 
-        setInterval(getdata,3000);
+         
+            var map = L.map('myMap').setView([latitud, longitud], 13);
+
+           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+               attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+           }).addTo(map);
+
+           map.setView ([latitud, longitud], 13);
+           L.marker([latitud, longitud]).addTo(map);
+           } 
+           setInterval(getdata,3000);
 
 
 
-         var map = L.map('myMap').setView([latitud, longitud], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        map.setView ([latitud, longitud], 13);
-        L.marker([latitud, longitud]).addTo(map);
         
     </script>
  
