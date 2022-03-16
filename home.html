@@ -23,9 +23,13 @@
     crossorigin=""></script>
     <script type="
     text/javascript">
-         var latitud=0;
+        var latitud=0;
         var longitud=0;
+        var map = L.map('myMap').setView([latitud, longitud], 13);
 
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+               attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+           }).addTo(map);
         const route = document.getElementById('data')
         const getdata = async() => {
             const response = await fetch('/home')
@@ -37,11 +41,7 @@
             latitud=parseFloat(json.latitud);
             longitud=parseFloat(json.longitud);
          
-            var map = L.map('myMap').setView([latitud, longitud], 13);
-
-           L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-               attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-           }).addTo(map);
+           
 
            map.setView ([latitud, longitud], 13);
            L.marker([latitud, longitud]).addTo(map);
