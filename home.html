@@ -40,14 +40,15 @@
             const json = await response.json()
             route.innerHTML = `${json.latitud} ${json.longitud} ${json.fecha} ${json.hora}`
             
-            console.log("probando"+json)
+            console.log("probando",json)
             latitud=parseFloat(json.latitud);
             longitud=parseFloat(json.longitud);
             console.log(typeof(longitud))
             console.log(typeof(latitud))
             console.log((longitud))
             console.log((latitud))
-         marker.setLatLng([latitud, longitud], 13)
+         marker.setLatLng([11.019326, -74.8515549])
+      
 
         } 
         
