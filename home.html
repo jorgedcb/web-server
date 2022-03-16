@@ -32,10 +32,6 @@
     <script type="text/javascript">
         let latitud=0;
         let longitud=0;
-        let map = L.map('myMap').setView([11.019326, -74.8515549], 13);     
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
         const marker = L.marker([0, 0]);
 
         const route = document.getElementById('data')
@@ -46,17 +42,19 @@
             
             console.log("probando",json)
             latitud=parseFloat(json.latitud);
-            longitud=parseFloat(json.longitud);
-            marker.setLatLng([latitud,-longitud])
-            route.innerHTML = `${json.latitud} ${-longitud} ${json.fecha} ${json.hora}`
-            map.setView([latitud,-longitud],13)
-         
+            longitud=-parseFloat(json.longitud);
+         //marker.setLatLng([11.019326, -74.8515549])
+            marker.setLatLng([latitud,longitud])
+          route.innerHTML = `${json.latitud} ${longitud} ${json.fecha} ${json.hora}`
 
         } 
         
         setInterval(getdata,3000)
     
-        
+        let map = L.map('myMap').setView([11.019326, -74.8515549], 13);     
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
      
        marker.addTo(map);
         
