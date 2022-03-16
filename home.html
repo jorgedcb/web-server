@@ -38,18 +38,14 @@
         const getdata = async() => {
             const response = await fetch('/home')
             const json = await response.json()
-            route.innerHTML = `${json.latitud} ${json.longitud} ${json.fecha} ${json.hora}`
+       
             
             console.log("probando",json)
             latitud=parseFloat(json.latitud);
-            longitud=parseFloat(json.longitud);
-            console.log(typeof(longitud))
-            console.log(typeof(latitud))
-            console.log((longitud))
-            console.log((latitud))
+            longitud=-parseFloat(json.longitud);
          //marker.setLatLng([11.019326, -74.8515549])
-            marker.setLatLng([latitud,-longitud])
-      
+            marker.setLatLng([latitud,longitud])
+          route.innerHTML = `${json.latitud} ${longitud} ${json.fecha} ${json.hora}`
 
         } 
         
