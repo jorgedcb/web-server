@@ -32,7 +32,7 @@
     <script type="text/javascript">
         let latitud=0;
         let longitud=0;
-        const marker = L.marker([11.019326, -74.8515549]);
+        const marker = L.marker([0, 0]);
 
         const route = document.getElementById('data')
         const getdata = async() => {
@@ -47,7 +47,8 @@
             console.log(typeof(latitud))
             console.log((longitud))
             console.log((latitud))
-         marker.setLatLng([11.019326, -74.8515549])
+         //marker.setLatLng([11.019326, -74.8515549])
+            marker.setLatLng([longitud,latitud])
       
 
         } 
