@@ -32,6 +32,7 @@
     <script type="text/javascript">
         let latitud=0;
         let longitud=0;
+        const marker = L.marker([lat, lon]);
 
         const route = document.getElementById('data')
         const getdata = async() => {
@@ -46,16 +47,18 @@
             Console.log(typeof(latitud))
             Console.log((longitud))
             Console.log((latitud))
-         L.marker.setLatLng([latitud, longitud], 13)
+         marker.setLatLng([latitud, longitud], 13)
 
         } 
+        
         setInterval(getdata,3000)
     
         let map = L.map('myMap').setView([latitud, longitud], 13);     
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-       L.marker([latitud, longitud]).addTo(map);
+     
+       marker.addTo(map);
         
         
         
