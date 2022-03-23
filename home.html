@@ -51,6 +51,12 @@
             marker.setLatLng([latitud,longitud])
             route.innerHTML = `${json.latitud} ${longitud} ${json.fecha} ${json.hora}`
             map.setView([latitud,longitud])
+             
+            var latlang = [];
+            latlang.push([latitud, longitud]);
+             
+            var PolyLineOptions = {color: 'red'};
+            var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
 
         } 
         
