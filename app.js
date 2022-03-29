@@ -19,7 +19,7 @@ db.connect((err) => {
     if (err) {
         throw err
     }
-      console.log('la conexión con la base de datos funciona')
+      console.log('la conexión con la base de datos funciona bien')
   });
 
 const app = express();
