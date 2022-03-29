@@ -1,7 +1,7 @@
 const express = require('express')
  const mysql = require('mysql');
 var dgram = require('dgram');
-var port = 7000;
+var port = 5000;
 var port_web = 3000;
 const path = require('path')
 
