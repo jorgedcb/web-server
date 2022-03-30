@@ -54,14 +54,14 @@
             marker.setLatLng([latitud,longitud])
             route.innerHTML = `${json.latitud} ${longitud} ${json.fecha} ${json.hora}`
             map.setView([latitud,longitud])
-             
+            
 
             latlang.push([latitud, longitud]);
              Polyline.setLatLngs(latlang)
 
         } 
         
-        setInterval(getdata,3000)
+        setInterval(getdata, 3000)
     
        
      
