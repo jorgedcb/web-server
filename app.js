@@ -1,9 +1,11 @@
-const express = require('express')
- const mysql = require('mysql');
+const express = require('express');
+const mysql = require('mysql');
 var dgram = require('dgram');
 var port = 5000;
 var port_web = 3000;
-const path = require('path')
+const path = require('path');
+var Times;
+var Coordinates;
 
 require('dotenv').config();
 
@@ -27,37 +29,67 @@ app.use(express.json())
 
 // create table
 app.get('/creategpstable', (req, res) => {
-  let sql = 'CREATE TABLE mytable(id int AUTO_INCREMENT, latitud VARCHAR(255), longitud VARCHAR(255), fecha VARCHAR(255), hora VARCHAR(255), PRIMARY KEY(id))';
+  let sql = 'CREATE TABLE gpstable(id int AUTO_INCREMENT, latitud VARCHAR(255), longitud VARCHAR(255), time DATETIME, user VARCHAR(255), PRIMARY KEY(id))';
   db.query(sql, (err,result) =>{
     if(err) throw err;
-    console.log(result);
-    res.send('my table created...');
+    //console.log(result);
+    res.send('my table created....');
   });
 });
 
 app.get('/home', (req,res) => {
-  let sql = 'SELECT * FROM mytable ORDER BY id DESC LIMIT 1';
+  let sql = 'SELECT * FROM gpstable ORDER BY id DESC LIMIT 1';
   let query = db.query(sql,(err, results) =>{
     if(err) throw err;
     res.send(results[0]);
   });
 });
 
+app.get('/additem', (req, res) => {
+  datagps = "11.0041--74.8070;02-04-2022 23:31:23".split(";")
+  var t = datagps[1].split(' ');
+  var d = t[0];
+  var day = d.split("-").reverse().join("-");
+  var time = day + " " +t[1];
+  console.log(time)
+  var coordenadas = datagps[0].split('-')
+  var user = 'jorge';
+  let lon = '-';
+  let long = lon.concat(coordenadas[1]);
+  let post = {latitud:coordenadas[0], longitud:long, time:time, user:user};
+  console.log(post)
+  let sql = 'INSERT INTO gpstable set ?';
+  let query = db.query(sql, post,(err, result) => {
+    if(err) throw err;
+    console.log(result.affectedRows)
+    res.send('Post added')
+  })
+});
+
 app.get("/", function(req, res) {
 res.sendFile(path.join(__dirname, "home.html"));
 });
+
+
+app.get("/historic", function(req, res) {
+  res.sendFile(path.join(__dirname, "historic.html"));
+  });
 
 socket = dgram.createSocket('udp4');
 
 socket.on('message', function (msg, info){
     datagps = msg.toString().split(';')
-    console.log(datagps);
-    var time = datagps[1].split(' ')
+    var t = datagps[1].split(' ');
+    var d = t[0];
+    var day = d.split("-").reverse().join("-");
+    var time = day + " " +t[1];
+    console.log(time)
     var coordenadas = datagps[0].split('-')
+    var user = 'jorge';
     let lon = '-';
     let long = lon.concat(coordenadas[1]);
-    let post = {latitud:coordenadas[0], longitud:long, fecha:time[0], hora:time[1]};
-    let sql = 'INSERT INTO mytable set ?';
+    let post = {latitud:coordenadas[0], longitud:long, time:time, user:user};
+    let sql = 'INSERT INTO gpstable set ?';
     let query = db.query(sql, post,(err, result) => {
       if(err) throw err;
       console.log("mesage insetado")
@@ -74,3 +106,49 @@ socket.bind(port);
 app.listen(port_web, ()=> {
   console.log(`Demo app is up and listening to port: ${port_web}`);
 })
+
+app.post('/chistoric', function (req, res) {
+  console.log("Historics sended")
+  console.log(req.body);
+  var HisDat = req.body;
+  var InitTime = HisDat.datainicio.toString();
+  var FinalTime = HisDat.datafin.toString();
+  let sql = "SELECT * FROM gpstable WHERE time BETWEEN ('" + InitTime + "') AND ('" + FinalTime + "')";
+  let query = db.query(sql,(err, results) =>{
+    if(err) throw err;
+    res.send(results);
+    Coordinates = results;
+  });
+});
+  
+app.get('/coordinates', (req,res) => {
+  res.send(Coordinates);
+});
+
+app.post('/thistoric', function (req, res) {
+  var cor = req.body;
+  var lat = cor.la;
+  var lon = cor.lo;
+  var ra = cor.ra; //kilometros
+  let sql = 'SELECT * FROM gpstable WHERE acos(sin('+lat+') * sin(latitud) + cos('+lat+') * cos(latitud) * cos(longitud - ('+lon+'))) * 6371 <= '+ra+'';
+  db.query(sql,(err, results) =>{
+    if(err) throw err;
+    res.send(results);
+    var DataTotal = JSON.parse(JSON.stringify(results));
+    var DataObjects = Object.values(DataTotal);
+    var Time;
+    var TimesArr = [];
+    
+    for (var i = 0; i < DataObjects.length; i++) {
+      j = DataObjects[i];
+      Time = j.time;
+      TimesArr.push(Time);
+    }
+    Times = TimesArr;
+  });
+});
+
+app.get('/times', (req,res) => {
+    res.send(Times);
+  });
+
