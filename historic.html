@@ -190,7 +190,10 @@
             console.log("hola")
             const response = await fetch('/coordinates')
             const json = await response.json()
-            Polyline.setLatLngs(json)
+            if (json.length>0){
+  
+                 Polyline.setLatLngs(json)
+            }
 
             let text = "<table border='1'>"
                 for (var i = 0; i < json.length; i++) {
