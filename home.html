@@ -1,78 +1,60 @@
 <!DOCTYPE html>
- 
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Node Tutorial</title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-   crossorigin=""/>
-   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-   crossorigin=""/>
- 
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
 </head>
- 
+
 <body>
-  <a href="/historic">Historicos</a>
+    <a href="/historic">Historicos</a>
     <h1>TIEMPO REAL</h1>
     <p id="data"></p>
-
-
     <div id="myMap" style="height: 600px"></div>
-
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-    crossorigin=""></script> 
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin="">
+    </script>
 
-    
     <script type="text/javascript">
-        let latitud=0;
-        let longitud=0;
-        let map = L.map('myMap').setView([11.019326, -74.8515549], 13);     
+        let latitud = 0;
+        let longitud = 0;
+        let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
         const marker = L.marker([0, 0]);
+        const route = document.getElementById('data')
+        var latlang = [];
+        var PolyLineOptions = { color: 'red' };
+        var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
 
-            const route = document.getElementById('data')
-            var latlang = [];
-            var PolyLineOptions = {color: 'red'};
-            var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
-            const getdata = async() => {
+        //Actualización de los datos (cada 3 segundos)
+        const getdata = async () => {
             const response = await fetch('/home')
             const json = await response.json()
-       
-            
-            console.log("probando",json)
-            latitud=parseFloat(json.latitud);
-            longitud=parseFloat(json.longitud);
-         //marker.setLatLng([11.019326, -74.8515549])
-            marker.setLatLng([latitud,longitud])
-            route.innerHTML = `${json.latitud} ${longitud} ${json.fecha} ${json.hora}`
-            map.setView([latitud,longitud])
-            
-
+            latitud = parseFloat(json.latitud);
+            longitud = parseFloat(json.longitud);
+            marker.setLatLng([latitud, longitud]);
+            route.innerHTML = `${json.latitud} ${longitud} ${json.time}`
+            map.setView([latitud, longitud]);
             latlang.push([latitud, longitud]);
-             Polyline.setLatLngs(latlang)
+            Polyline.setLatLngs(latlang)
+        }
 
-        } 
-        
         setInterval(getdata, 3000)
-    
-       
-     
-       marker.addTo(map);
-        
-        
-        
-            
-</script>
-<p>Cosas que pasan 2 </p>
 
-       
+        marker.addTo(map);
+
+    </script>
+
     </div>
-   
-    
+
 </body>
