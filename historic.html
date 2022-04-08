@@ -2,6 +2,19 @@
 
 <html lang="en" dir="ltr">
 
+<head>
+  <meta charset="utf-8">
+  <title>Node Tutorial</title>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+
+</head>
+
 <body>
   <div class="wrapper">
     <div class="inlineclass" id="mapid"></div>
@@ -70,7 +83,25 @@
     </div>
   </div>
   </div>
+  <div id="myMap" style="height: 600px"></div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
   <script>
+
+    let latitud = 0;
+    let longitud = 0;
+    let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    const marker = L.marker([0, 0]);
+    var latlang = [];
+    var PolyLineOptions = { color: 'red' };
+    var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
+
+
 
     //Condición de Calendario
     window.addEventListener('load', function () {
@@ -94,6 +125,7 @@
       valor = document.getElementById('switch2').checked;
       if (valor) {
         enviarhist();
+        setInterval(getdatac, 3000);
       }
     }
 
@@ -121,6 +153,7 @@
       valor = document.getElementById('switch3').checked;
       if (valor) {
         enviarhistact();
+        setInterval(getdatat, 3000);
       }
     }
     //Función de coneión Frontend-Backend del histórico actual
@@ -163,10 +196,18 @@
       const response = await fetch('/coordinates')
       const json = await response.json()
 
+
+
       let text = "<table border='1'>"
       for (var i = 0; i < json.length; i++) {
         text += "<tr><td>" + json[i].latitud + " " + json[i].longitud + "</td></tr>";
+        latlang.push([json[i].latitud, json[i].longitud]);
+        Polyline.setLatLngs(latlang)
+
       }
+      var L = json.length
+      marker.setLatLng([json[L].latitud, json[L].longitud])
+      map.setView([[json[0].latitud, json[0].longitud]]);
       text += "</table>"
       if (document.getElementById('switch2').checked) {
         routec.innerHTML = text;
@@ -174,7 +215,7 @@
         routec.innerHTML = "";
       }
     }
-    setInterval(getdatac, 3000)
+    
 
   </script>
 </body>

@@ -40,15 +40,18 @@
         const getdata = async () => {
             const response = await fetch('/home')
             const json = await response.json()
-            latitud = parseFloat(json.latitud);
-            longitud = parseFloat(json.longitud);
-            marker.setLatLng([latitud, longitud]);
-            route.innerHTML = `${json.latitud} ${longitud} ${json.time}`
-            map.setView([latitud, longitud]);
+       
+            
+            latitud=parseFloat(json.latitud);
+            longitud=parseFloat(json.longitud);
+            marker.setLatLng([latitud,longitud])
+            route.innerHTML = `${json.latitud} ${json.longitud} ${json.time}`
+            map.setView([latitud,longitud])
+            
+
             latlang.push([latitud, longitud]);
             Polyline.setLatLngs(latlang)
         }
-
         setInterval(getdata, 3000)
 
         marker.addTo(map);
