@@ -2,84 +2,113 @@
 
 <html lang="en" dir="ltr">
 
+<head>
+  <meta charset="utf-8">
+  <title>Node Tutorial</title>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin="" />
+
+</head>
+
 <body>
-    <div class="wrapper">
-      <div class="inlineclass" id="mapid"></div>
-      <div class="inlineclass" style="text-align: center;" id="container">
-        <h1 style="text-align: center; padding-top: 15px;">que paso ayer?</h1>
+  <div class="wrapper">
+    <div class="inlineclass" id="mapid"></div>
+    <div class="inlineclass" style="text-align: center;" id="container">
+      <h1 style="text-align: center; padding-top: 15px;">que paso ayer?</h1>
 
-        <div></div>
+      <div></div>
 
-        <h2 style="text-align: center; margin-top: 15px;">donde estuve a las ...?</h2>
+      <h2 style="text-align: center; margin-top: 15px;">donde estuve a las ...?</h2>
 
-        <div></div>
+      <div></div>
 
-        <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="IHist">Inicio:</label>
-        <input class="inlineclass" style="text-align: center;" type="datetime-local" id="IHist" onchange="changehist()" name="InitialHistoric" value="2022-01-01T00:00"
-          min="2021-06-01T00:00" max="2044-06-01T00:00">
+      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="IHist">Inicio:</label>
+      <input class="inlineclass" style="text-align: center;" type="datetime-local" id="IHist" onchange="changehist()"
+        name="InitialHistoric" value="2022-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
 
-        <div></div>
+      <div></div>
 
-        <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="FHist">Fin:</label>
-        <input class="inlineclass" style="text-align: center;" type="datetime-local" id="FHist" onchange="changehist()" name="FinalHistoric" value="2023-01-01T00:00"
-          min="2021-06-01T00:00" max="2044-06-01T00:00">
+      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="FHist">Fin:</label>
+      <input class="inlineclass" style="text-align: center;" type="datetime-local" id="FHist" onchange="changehist()"
+        name="FinalHistoric" value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
 
-        <div></div>
+      <div></div>
 
-        <div class="switch-container;" style="text-align: center; margin-top: 5px;">
-          <input type="Checkbox" id="switch2">
-          <label for="switch2" onclick="changehist()" class="sw"></label>
-        </div>
-        <div></div>
-
-        <p id="coordinates"></p>
-
-        <div></div>
-
-        <h2 style="text-align: center; margin-top: 15px;">estuve en ...?</h2>
-
-        <div></div>
-
-        <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="LatHis">Latitud:</label>
-        <input class="inlineclass" style="text-align: center;" type="number" id="LatHis" onchange="changehistact()" name="LatitudHistorico" value="11.0041"
-          min="-180" max="180" step=".0001">
-
-        <div></div>
-
-        <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="LonHis">Longitud:</label>
-        <input class="inlineclass" style="text-align: center;" type="number" id="LonHis" onchange="changehistact()" name="LongitudHistorico" value="-74.8070"
-        min="-180" max="180" step=".0001">  
-
-        <div></div>
-
-        <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="RadHis">Radio(km):</label>
-        <input class="inlineclass" style="text-align: center;" type="number" id="RadHis" onchange="changehistact()" name="RadioHistoric" value="1000"
-        min="0" step=".01"> 
-
-        <div></div>
-
-        <div class="switch-container;" style="text-align: center; margin-top: 5px;">
-          <input type="Checkbox" id="switch3">
-          <label for="switch3" onclick="changehistact()" class="sw"></label>
-        </div>
-
-        <div></div>
-
-        <p id="data"></p>
-
+      <div class="switch-container;" style="text-align: center; margin-top: 5px;">
+        <input type="Checkbox" id="switch2">
+        <label for="switch2" onclick="changehist()" class="sw"></label>
       </div>
+      <div></div>
+
+      <p id="coordinates"></p>
+
+      <div></div>
+
+      <h2 style="text-align: center; margin-top: 15px;">estuve en ...?</h2>
+
+      <div></div>
+
+      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="LatHis">Latitud:</label>
+      <input class="inlineclass" style="text-align: center;" type="number" id="LatHis" onchange="changehistact()"
+        name="LatitudHistorico" value="11.0041" min="-180" max="180" step=".0001">
+
+      <div></div>
+
+      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="LonHis">Longitud:</label>
+      <input class="inlineclass" style="text-align: center;" type="number" id="LonHis" onchange="changehistact()"
+        name="LongitudHistorico" value="-74.8070" min="-180" max="180" step=".0001">
+
+      <div></div>
+
+      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="RadHis">Radio(km):</label>
+      <input class="inlineclass" style="text-align: center;" type="number" id="RadHis" onchange="changehistact()"
+        name="RadioHistoric" value="1000" min="0" step=".01">
+
+      <div></div>
+
+      <div class="switch-container;" style="text-align: center; margin-top: 5px;">
+        <input type="Checkbox" id="switch3">
+        <label for="switch3" onclick="changehistact()" class="sw"></label>
+      </div>
+
+      <div></div>
+
+      <p id="data"></p>
+
     </div>
   </div>
+  </div>
+  <div id="myMap" style="height: 600px"></div>
+
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
   <script>
 
-    //cambio
-    
+    let latitud = 0;
+    let longitud = 0;
+    let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    const marker = L.marker([0, 0]);
+    var latlang = [];
+    var PolyLineOptions = { color: 'red' };
+    var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
+
+
+
     //Condición de Calendario
     window.addEventListener('load', function () {
       datainicio = document.getElementById('IHist')
-      datainicio.addEventListener('change', function () { 
-        if (document.getElementById('FHist').value < this.value) { 
-        document.getElementById('FHist').value = this.value;
+      datainicio.addEventListener('change', function () {
+        if (document.getElementById('FHist').value < this.value) {
+          document.getElementById('FHist').value = this.value;
         }
 
       });
@@ -91,14 +120,15 @@
       });
     });
 
-    
+
     function changehist() {
       valor = document.getElementById('switch2').checked;
       if (valor) {
         enviarhist();
+        setInterval(getdatac, 3000);
       }
     }
-    
+
     async function enviarhist() {
       datainicio = document.getElementById('IHist').value;
       datafin = document.getElementById('FHist').value;
@@ -120,22 +150,23 @@
 
     //Función de consulta de histórico actual
     function changehistact() {
-      console.log("changehistoricact")  
+      console.log("changehistoricact")
       valor = document.getElementById('switch3').checked;
       if (valor) {
         enviarhistact();
+        setInterval(getdatat, 3000);
       }
     }
     //Función de coneión Frontend-Backend del histórico actual
     async function enviarhistact() {
-      console.log("enviarhistoria")  
+      console.log("enviarhistoria")
       la = document.getElementById('LatHis').value;
       lo = document.getElementById('LonHis').value;
       ra = document.getElementById('RadHis').value;
       console.log('radio2= ' + la);
       console.log('latitud2= ' + lo);
       console.log('longuitud2= ' + ra);
-      const info = {la,lo,ra};
+      const info = { la, lo, ra };
       console.log('info2= ' + info);
       const options = {
         method: 'POST',
@@ -149,35 +180,43 @@
 
 
     const routet = document.getElementById('data')
-        const getdatat = async() => {
-            const response = await fetch('/times')
-            const json = await response.json()
-            if (document.getElementById('switch3').checked) {
-            routet.innerHTML = json
-            }else{
-            routet.innerHTML = ""
-            }
-        } 
-        setInterval(getdatat,3000)
+    const getdatat = async () => {
+      const response = await fetch('/times')
+      const json = await response.json()
+      if (document.getElementById('switch3').checked) {
+        routet.innerHTML = json
+      } else {
+        routet.innerHTML = ""
+      }
+    }
+    setInterval(getdatat, 3000)
 
     const routec = document.getElementById('coordinates')
-        const getdatac = async() => {
-            console.log("hola")
-            const response = await fetch('/coordinates')
-            const json = await response.json()
+    const getdatac = async () => {
+      console.log("hola")
+      const response = await fetch('/coordinates')
+      const json = await response.json()
 
-            let text = "<table border='1'>"
-                for (var i = 0; i < json.length; i++) {
-                text += "<tr><td>" + json[i].latitud+" "+json[i].longitud + "</td></tr>";
-            }
-            text += "</table>"
-            if (document.getElementById('switch2').checked) {
-            routec.innerHTML = text;
-            }else{
-            routec.innerHTML = "";
-            }
-        } 
-        setInterval(getdatac,3000)
+
+
+      let text = "<table border='1'>"
+      for (var i = 0; i < json.length; i++) {
+        text += "<tr><td>" + json[i].latitud + " " + json[i].longitud + "</td></tr>";
+        latlang.push([json[i].latitud, json[i].longitud]);
+        Polyline.setLatLngs(latlang)
+
+      }
+      var L = json.length
+      marker.setLatLng([json[L].latitud, json[L].longitud])
+      map.setView([[json[0].latitud, json[0].longitud]]);
+      text += "</table>"
+      if (document.getElementById('switch2').checked) {
+        routec.innerHTML = text;
+      } else {
+        routec.innerHTML = "";
+      }
+    }
+    
 
   </script>
 </body>

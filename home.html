@@ -45,17 +45,15 @@
             const json = await response.json()
        
             
-            console.log("probando",json)
             latitud=parseFloat(json.latitud);
             longitud=parseFloat(json.longitud);
-         //marker.setLatLng([11.019326, -74.8515549])
             marker.setLatLng([latitud,longitud])
-            route.innerHTML = `${json.latitud} ${longitud} ${json.fecha} ${json.hora}`
+            route.innerHTML = `${json.latitud} ${json.longitud} ${json.time}`
             map.setView([latitud,longitud])
             
 
             latlang.push([latitud, longitud]);
-             Polyline.setLatLngs(latlang)
+            Polyline.setLatLngs(latlang)
 
         } 
         
