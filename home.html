@@ -15,11 +15,9 @@
 </head>
  
 <body>
-  
-    <h1>prueba diseño1</h1>
+  <a href="/historic">Historicos</a>
+    <h1>TIEMPO REAL</h1>
     <p id="data"></p>
-  
-
 
 
     <div id="myMap" style="height: 600px"></div>
@@ -39,28 +37,27 @@
         const marker = L.marker([0, 0]);
 
             const route = document.getElementById('data')
+            var latlang = [];
+            var PolyLineOptions = {color: 'red'};
+            var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
             const getdata = async() => {
             const response = await fetch('/home')
             const json = await response.json()
        
             
-            console.log("probando",json)
             latitud=parseFloat(json.latitud);
             longitud=parseFloat(json.longitud);
-         //marker.setLatLng([11.019326, -74.8515549])
             marker.setLatLng([latitud,longitud])
-            route.innerHTML = `${json.latitud} ${longitud} ${json.fecha} ${json.hora}`
+            route.innerHTML = `${json.latitud} ${json.longitud} ${json.time}`
             map.setView([latitud,longitud])
-             
-            var latlang = [];
+            
+
             latlang.push([latitud, longitud]);
-             
-            var PolyLineOptions = {color: 'red'};
-            var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
+            Polyline.setLatLngs(latlang)
 
         } 
         
-        setInterval(getdata,3000)
+        setInterval(getdata, 3000)
     
        
      
