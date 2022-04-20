@@ -21,7 +21,7 @@ db.connect((err) => {
     if (err) {
         throw err
     }
-      console.log('la conexiónn con la base de datos funciona bien')
+      console.log('la conexión con la base de datos funciona super bien')
   });
 
 const app = express();
@@ -32,7 +32,7 @@ app.get('/creategpstable', (req, res) => {
   let sql = 'CREATE TABLE gpstable(id int AUTO_INCREMENT, latitud VARCHAR(255), longitud VARCHAR(255), time DATETIME, user VARCHAR(255), PRIMARY KEY(id))';
   db.query(sql, (err,result) =>{
     if(err) throw err;
-    //console.log(result);
+    console.log(result);
     res.send('my table created....');
   });
 });
@@ -151,4 +151,3 @@ app.post('/thistoric', function (req, res) {
 app.get('/times', (req,res) => {
     res.send(Times);
   });
-
