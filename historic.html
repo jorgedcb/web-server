@@ -129,7 +129,7 @@
       if (route.length < 0) {
         return;
       }
-
+      //calcular distancias
       const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
       const pointsInRange = route.filter((obj, index) => distanceArray[index] <= radius);
       routec.innerHTML = pointsInRange.map((obj) =>
