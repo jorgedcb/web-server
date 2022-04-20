@@ -151,4 +151,3 @@ app.post('/thistoric', function (req, res) {
 app.get('/times', (req,res) => {
     res.send(Times);
   });
-
