@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
-
 </head>
 
 <body>
@@ -80,12 +79,13 @@
       });
     });
 
-
+    //Detecta cambios en los calendarios
     function changehist() {
       enviarhist()
       .then(() => getdatac());
     }
 
+    //Hace la consulta en app.js
     async function enviarhist() {
       datainicio = document.getElementById('IHist').value;
       datafin = document.getElementById('FHist').value;
@@ -105,23 +105,19 @@
       route = await response.json();
     }
 
-    const routec = document.getElementById('coordinates')
+    //Despliega la polilínea sobre el mapa con los históricos
     const getdatac = async () => {
-      console.log("hola")
-      // let text = "<table border='1'>"
       latlang = [];
       for (var i = 0; i < route.length; i++) {
-        // text += "<tr><td>" + route[i].latitud + " " + route[i].longitud + "</td></tr>";
         latlang.push([route[i].latitud, route[i].longitud]);
       }
       Polyline.setLatLngs(latlang);
       if (route.length > 0) {
         map.setView([route[0].latitud, route[0].longitud], 13);
       }
-      // text += "</table>"
-      // routec.innerHTML = text;
     }
     
+    const routec = document.getElementById('coordinates');
     const radiusLocations = (location, radius) => {
       routeMarker.setLatLng(location).addTo(map);
       rangeCircle.setLatLng(location).setRadius(radius).addTo(map);
@@ -129,12 +125,12 @@
       if (route.length < 0) {
         return;
       }
-      //calcular distancias
+
+      //Calcular distancias
       const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
       const pointsInRange = route.filter((obj, index) => distanceArray[index] <= radius);
       routec.innerHTML = pointsInRange.map((obj) =>
         `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time}</p>`).join('');
-      console.log(pointsInRange);
     }
 
   </script>
