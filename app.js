@@ -9,7 +9,6 @@ var Coordinates;
 
 require('dotenv').config();
 
-var data;
 var db = mysql.createConnection({
   user: process.env.USER_DB,
   host: process.env.HOST,
@@ -125,29 +124,10 @@ app.get('/coordinates', (req,res) => {
   res.send(Coordinates);
 });
 
-app.post('/thistoric', function (req, res) {
-  var cor = req.body;
-  var lat = cor.la;
-  var lon = cor.lo;
-  var ra = cor.ra; //kilometros
-  let sql = 'SELECT * FROM gpstable WHERE acos(sin('+lat+') * sin(latitud) + cos('+lat+') * cos(latitud) * cos(longitud - ('+lon+'))) * 6371 <= '+ra+'';
-  db.query(sql,(err, results) =>{
-    if(err) throw err;
-    res.send(results);
-    var DataTotal = JSON.parse(JSON.stringify(results));
-    var DataObjects = Object.values(DataTotal);
-    var Time;
-    var TimesArr = [];
-    
-    for (var i = 0; i < DataObjects.length; i++) {
-      j = DataObjects[i];
-      Time = j.time;
-      TimesArr.push(Time);
-    }
-    Times = TimesArr;
+app.get("/about", function(req, res) {
+  res.sendFile(path.join(__dirname, "about.html"));
   });
-});
 
-app.get('/times', (req,res) => {
-    res.send(Times);
+app.get("/contact", function(req, res) {
+  res.sendFile(path.join(__dirname, "contact.html"));
   });
