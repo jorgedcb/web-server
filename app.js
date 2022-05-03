@@ -36,8 +36,34 @@ app.get('/creategpstable', (req, res) => {
   });
 });
 
-app.get('/home', (req,res) => {
-  let sql = 'SELECT * FROM gpstable ORDER BY id DESC LIMIT 1';
+app.get('/carro1', (req,res) => {
+  let sql = "SELECT * FROM gpstable WHERE user='Carro 1' ORDER BY id DESC LIMIT 1";
+  let query = db.query(sql,(err, results) =>{
+    if(err) throw err;
+    res.send(results[0]);
+  });
+});
+
+app.get('/carro2', (req,res) => {
+  let sql = "SELECT * FROM gpstable WHERE user='Carro 2' ORDER BY id DESC LIMIT 1";
+  let query = db.query(sql,(err, results) =>{
+    if(err) throw err;
+    res.send(results[0]);
+  });
+});
+
+app.get('/addcolumn', (req,res) => {
+  let sql = 'ALTER TABLE gpstable ADD rpm varchar(255)';
+  let query = db.query(sql,(err, results) =>{
+    if(err) throw err;
+    res.send(results[0]);
+  });
+});
+
+app.get('/update', (req,res) => {
+  var rpm = 'No info';
+  var user = 'Carro 1';
+  let sql = "UPDATE gpstable SET rpm = 'No info', user ='Carro 1'";
   let query = db.query(sql,(err, results) =>{
     if(err) throw err;
     res.send(results[0]);
@@ -45,17 +71,17 @@ app.get('/home', (req,res) => {
 });
 
 app.get('/additem', (req, res) => {
-  datagps = "11.0041--74.8070;02-04-2022 23:31:23".split(";")
+  datagps = "11.0241-74.8370;02-05-2022 11:11:11".split(";")
   var t = datagps[1].split(' ');
   var d = t[0];
   var day = d.split("-").reverse().join("-");
   var time = day + " " +t[1];
   console.log(time)
   var coordenadas = datagps[0].split('-')
-  var user = 'jorge';
+  var user = 'Carro 2';
   let lon = '-';
   let long = lon.concat(coordenadas[1]);
-  let post = {latitud:coordenadas[0], longitud:long, time:time, user:user};
+  let post = {latitud:coordenadas[0], longitud:long, time:time, user:user, rpm:'No info'};
   console.log(post)
   let sql = 'INSERT INTO gpstable set ?';
   let query = db.query(sql, post,(err, result) => {
