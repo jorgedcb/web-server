@@ -132,13 +132,32 @@
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script> 
     <script type="text/javascript">
+        
+        var blackIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var yellowIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
         let latitud=0;
         let longitud=0;
         let map = L.map('myMap').setView([11.019326, -74.8515549], 13);     
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-        const marker1 = L.marker([0, 0]);
+        const marker1 = L.marker([0, 0], {icon: blackIcon});
         const la1 = document.getElementById('la1')
         const lo1 = document.getElementById('lo1')
         const ti1 = document.getElementById('ti1')
@@ -164,7 +183,7 @@
         setInterval(getdata1, 3000)
         
         //para carro 2
-        const marker2 = L.marker([0, 0]);
+        const marker2 = L.marker([0, 0], {icon: yellowIcon});
         const la2 = document.getElementById('la2')
         const lo2 = document.getElementById('lo2')
         const ti2 = document.getElementById('ti2')
