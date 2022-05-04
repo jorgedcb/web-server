@@ -9,7 +9,6 @@ var Coordinates;
 
 require('dotenv').config();
 
-var data;
 var db = mysql.createConnection({
   user: process.env.USER_DB,
   host: process.env.HOST,
@@ -37,8 +36,34 @@ app.get('/creategpstable', (req, res) => {
   });
 });
 
-app.get('/home', (req,res) => {
-  let sql = 'SELECT * FROM gpstable ORDER BY id DESC LIMIT 1';
+app.get('/carro1', (req,res) => {
+  let sql = "SELECT * FROM gpstable WHERE user='Carro 1' ORDER BY id DESC LIMIT 1";
+  let query = db.query(sql,(err, results) =>{
+    if(err) throw err;
+    res.send(results[0]);
+  });
+});
+
+app.get('/carro2', (req,res) => {
+  let sql = "SELECT * FROM gpstable WHERE user='Carro 2' ORDER BY id DESC LIMIT 1";
+  let query = db.query(sql,(err, results) =>{
+    if(err) throw err;
+    res.send(results[0]);
+  });
+});
+
+app.get('/addcolumn', (req,res) => {
+  let sql = 'ALTER TABLE gpstable ADD rpm varchar(255)';
+  let query = db.query(sql,(err, results) =>{
+    if(err) throw err;
+    res.send(results[0]);
+  });
+});
+
+app.get('/update', (req,res) => {
+  var rpm = 'No info';
+  var user = 'Carro 1';
+  let sql = "UPDATE gpstable SET rpm = 'No info', user ='Carro 1'";
   let query = db.query(sql,(err, results) =>{
     if(err) throw err;
     res.send(results[0]);
@@ -46,17 +71,17 @@ app.get('/home', (req,res) => {
 });
 
 app.get('/additem', (req, res) => {
-  datagps = "11.0041--74.8070;02-04-2022 23:31:23".split(";")
+  datagps = "11.0241-74.8370;02-05-2022 11:11:11".split(";")
   var t = datagps[1].split(' ');
   var d = t[0];
   var day = d.split("-").reverse().join("-");
   var time = day + " " +t[1];
   console.log(time)
   var coordenadas = datagps[0].split('-')
-  var user = 'jorge';
+  var user = 'Carro 2';
   let lon = '-';
   let long = lon.concat(coordenadas[1]);
-  let post = {latitud:coordenadas[0], longitud:long, time:time, user:user};
+  let post = {latitud:coordenadas[0], longitud:long, time:time, user:user, rpm:'No info'};
   console.log(post)
   let sql = 'INSERT INTO gpstable set ?';
   let query = db.query(sql, post,(err, result) => {
@@ -125,29 +150,10 @@ app.get('/coordinates', (req,res) => {
   res.send(Coordinates);
 });
 
-app.post('/thistoric', function (req, res) {
-  var cor = req.body;
-  var lat = cor.la;
-  var lon = cor.lo;
-  var ra = cor.ra; //kilometros
-  let sql = 'SELECT * FROM gpstable WHERE acos(sin('+lat+') * sin(latitud) + cos('+lat+') * cos(latitud) * cos(longitud - ('+lon+'))) * 6371 <= '+ra+'';
-  db.query(sql,(err, results) =>{
-    if(err) throw err;
-    res.send(results);
-    var DataTotal = JSON.parse(JSON.stringify(results));
-    var DataObjects = Object.values(DataTotal);
-    var Time;
-    var TimesArr = [];
-    
-    for (var i = 0; i < DataObjects.length; i++) {
-      j = DataObjects[i];
-      Time = j.time;
-      TimesArr.push(Time);
-    }
-    Times = TimesArr;
+app.get("/about", function(req, res) {
+  res.sendFile(path.join(__dirname, "about.html"));
   });
-});
 
-app.get('/times', (req,res) => {
-    res.send(Times);
+app.get("/contact", function(req, res) {
+  res.sendFile(path.join(__dirname, "contact.html"));
   });
