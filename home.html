@@ -173,7 +173,9 @@
             marker1.setLatLng([latitud,longitud])
             la1.innerHTML = `Latitud: ${json.latitud}`
             lo1.innerHTML = `Longuitud: ${json.longitud}`
-            ti1.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString()}`
+            console.log(json.time)
+            console.log(new Date(json.time))
+            ti1.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }))}`
             rpm1.innerHTML = `RPM: ${json.rpm}`
             //map.setView([latitud,longitud])
             latlang.push([latitud, longitud]);
