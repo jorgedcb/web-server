@@ -99,26 +99,26 @@
         <div class="col-sm-8" style="background-color:#ffffff;"><h4 style="color:#000000;text-align: center;">Ultima ubicación registrada</h4></div>
         <div class="col-sm-4" style="background-color:#ffffff;">
             <div class="container">                                       
-                <div class="dropdown">
+                <div class="dropdown" id="my-div">
                   <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Seleccione el carro que desea ver 
                   <span class="caret"></span></button>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Carro 1</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Carro 2</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Carro 1 y 2</a></li>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" >
+                    <li data-src="1" role="presentation"><a role="menuitem" tabindex="-1" href="#" >Carro 1</a></li>
+                    <li data-src="2"role="presentation"><a role="menuitem" tabindex="-1" href="#" >Carro 2</a></li>
+                    <li data-src="3"role="presentation"><a role="menuitem" tabindex="-1" href="#" >Carro 1 y 2</a></li>
                   </ul>
                 </div>
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row"  id="divcarro1">
         <div class="col-sm-1" style="background-color:#000000;"><h4 style="color:#ffffff;">Carro 1:</h4></div>
         <div class="col-sm-3" style="background-color:#000000;"><h4 id="la1" style="color:#ffffff;">Latitud:</h4></div>
         <div class="col-sm-3" style="background-color:#000000;"><h4 id="lo1" style="color:#ffffff;">Longuitud:</h4></div>
         <div class="col-sm-3" style="background-color:#000000;"><h4 id="ti1" style="color:#ffffff;">Dia y fecha:</h4></div>
         <div class="col-sm-2" style="background-color:#000000;"><h4 id="rpm1" style="color:#ffffff;">RPM:</h4></div>
     </div>
-    <div class="row">
+    <div class="row" id="divcarro2">
         <div class="col-sm-1" style="background-color:#f3d147;"><h4 style="color:#ffffff;">Carro 2:</h4></div>
         <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="la2" style="color:#ffffff;">Latitud:</h4></div>
         <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="lo2" style="color:#ffffff;">Longuitud:</h4></div>
@@ -131,7 +131,35 @@
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script> 
     <script type="text/javascript">
-        
+        var dropdown_data;
+        $(document).ready(function() {
+            $("#my-div li").click(function() {
+                dropdown_data = $(this).attr("data-src");
+                var divcarro1 = document.getElementById("divcarro1");
+                var divcarro2 = document.getElementById("divcarro2");
+                console.log(dropdown_data)
+                if (dropdown_data == 1) {
+                    divcarro1.style.display = "block";
+                    divcarro2.style.display = "none";
+                    marker1.addTo(map); 
+                    map.removeLayer(marker2)
+                } else if(dropdown_data == 2){
+                    divcarro1.style.display = "none";
+                    divcarro2.style.display = "block";
+                    marker2.addTo(map); 
+                    map.removeLayer(marker1)
+                } else if(dropdown_data == 3){
+                    console.log("1 y 2")
+                    divcarro1.style.display = "block";
+                    divcarro2.style.display = "block";
+                    marker1.addTo(map); 
+                    marker2.addTo(map);
+                } else{
+                    divcarro1.style.display = "none";
+                    divcarro2.style.display = "none";
+                }
+            }); 
+        });
         var blackIcon = new L.Icon({
             iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
             shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -164,22 +192,19 @@
         var PolyLineOptions = {color: 'red'};
         var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
 
+        
         const getdata1 = async() => {
             const response = await fetch('/carro1')
             const json = await response.json()
-            
             latitud=parseFloat(json.latitud);
             longitud=parseFloat(json.longitud);
             marker1.setLatLng([latitud,longitud])
             la1.innerHTML = `Latitud: ${json.latitud}`
             lo1.innerHTML = `Longuitud: ${json.longitud}`
-            console.log(json.time)
-            console.log(new Date(json.time))
             ti1.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }))}`
             rpm1.innerHTML = `RPM: ${json.rpm}`
-            //map.setView([latitud,longitud])
             latlang.push([latitud, longitud]);
-            Polyline.setLatLngs(latlang)
+            Polyline.setLatLngs(latlang)   
         } 
         setInterval(getdata1, 3000)
         
@@ -208,7 +233,6 @@
             Polyline2.setLatLngs(latlang2)
         } 
         setInterval(getdata2, 3000)
-        marker1.addTo(map); 
-        marker2.addTo(map);
+        
     </script>       
 </body>
