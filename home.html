@@ -18,7 +18,7 @@
     <style>
         .dropbtn {
             background-color: #f3d147;
-            color: white;
+            color: #000000;
             padding: 6px;
             font-size: 19.5px;
             border: none;
@@ -82,7 +82,7 @@
         
         .topnav a.active {
         background-color: #f3d147;
-        color: white;
+        color: #000000;
         }
     </style>
  
@@ -119,11 +119,11 @@
         <div class="col-sm-2" style="background-color:#000000;"><h4 id="rpm1" style="color:#ffffff;">RPM:</h4></div>
     </div>
     <div class="row" id="divcarro2">
-        <div class="col-sm-1" style="background-color:#f3d147;"><h4 style="color:#ffffff;">Carro 2:</h4></div>
-        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="la2" style="color:#ffffff;">Latitud:</h4></div>
-        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="lo2" style="color:#ffffff;">Longuitud:</h4></div>
-        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="ti2" style="color:#ffffff;">Dia y fecha:</h4></div>
-        <div class="col-sm-2" style="background-color:#f3d147;"><h4 id="rpm2" style="color:#ffffff;">RPM:</h4></div>
+        <div class="col-sm-1" style="background-color:#f3d147;"><h4 style="color:#000000;">Carro 2:</h4></div>
+        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="la2" style="color:#000000;">Latitud:</h4></div>
+        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="lo2" style="color:#000000;">Longuitud:</h4></div>
+        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="ti2" style="color:#000000;">Dia y fecha:</h4></div>
+        <div class="col-sm-2" style="background-color:#f3d147;"><h4 id="rpm2" style="color:#000000;">RPM:</h4></div>
     </div>
     
     <div id="myMap" style="height: 600px"></div>
@@ -137,17 +137,20 @@
                 dropdown_data = $(this).attr("data-src");
                 var divcarro1 = document.getElementById("divcarro1");
                 var divcarro2 = document.getElementById("divcarro2");
-                console.log(dropdown_data)
                 if (dropdown_data == 1) {
                     divcarro1.style.display = "block";
                     divcarro2.style.display = "none";
                     marker1.addTo(map); 
                     map.removeLayer(marker2)
+                    Polyline2.setLatLngs([])
+                    
                 } else if(dropdown_data == 2){
                     divcarro1.style.display = "none";
                     divcarro2.style.display = "block";
                     marker2.addTo(map); 
                     map.removeLayer(marker1)
+                    Polyline.setLatLngs([])
+                    
                 } else if(dropdown_data == 3){
                     console.log("1 y 2")
                     divcarro1.style.display = "block";
@@ -188,10 +191,10 @@
         const la1 = document.getElementById('la1')
         const lo1 = document.getElementById('lo1')
         const ti1 = document.getElementById('ti1')
-        var latlang = [];
-        var PolyLineOptions = {color: 'red'};
-        var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
 
+        var latlang = [];
+        var PolyLineOptions = {color: '#000000'};
+        var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
         
         const getdata1 = async() => {
             const response = await fetch('/carro1')
@@ -203,8 +206,15 @@
             lo1.innerHTML = `Longuitud: ${json.longitud}`
             ti1.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }))}`
             rpm1.innerHTML = `RPM: ${json.rpm}`
-            latlang.push([latitud, longitud]);
-            Polyline.setLatLngs(latlang)   
+            if (dropdown_data == 2){
+                latlang = [];
+                Polyline.setLatLngs(latlang)  
+            } else{
+                latlang.push([latitud, longitud]);
+                Polyline.setLatLngs(latlang)
+                map.setView([latitud,longitud])   
+            }
+              
         } 
         setInterval(getdata1, 3000)
         
@@ -217,6 +227,7 @@
         var latlang2 = [];
         var PolyLineOptions2 = {color: '#f3d147'};
         var Polyline2 = L.polyline(latlang2, PolyLineOptions2).addTo(map);
+        
         const getdata2 = async() => {
             const response = await fetch('/carro2')
             const json = await response.json()
@@ -228,9 +239,17 @@
             lo2.innerHTML = `Longuitud: ${json.longitud}`
             ti2.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString()}`
             rpm2.innerHTML = `RPM: ${json.rpm}`
-            map.setView([latitud,longitud])
-            latlang2.push([latitud, longitud]);
-            Polyline2.setLatLngs(latlang2)
+            if (dropdown_data == 1){
+                latlang2 = [];
+                Polyline2.setLatLngs(latlang2)
+            }else  if (dropdown_data == 2){
+                latlang2.push([latitud, longitud]);
+                Polyline2.setLatLngs(latlang2) 
+                map.setView([latitud,longitud]) 
+            }else{
+                latlang2.push([latitud, longitud]);
+                Polyline2.setLatLngs(latlang2) 
+            }
         } 
         setInterval(getdata2, 3000)
         
