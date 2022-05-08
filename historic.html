@@ -67,6 +67,11 @@
       <input class="inlineclass" style="text-align: center;" type="datetime-local" id="FHist" onchange="changehist()"
         name="FinalHistoric" value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
 
+      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="carro_select">Vehículo:</label>
+      <select name="carro" id="carro_select">
+        <option value="0">Todos</option>
+      </select>
+
       <p id="coordinates"></p>
     </div>
   </div>
@@ -87,19 +92,17 @@
     const marker = L.marker([0, 0]);
     var latlang = [];
     var PolyLineOptions = { color: 'red' };
-    var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
+    const polylines = [];
     const routeMarker = L.marker([]);
     const rangeCircle = L.circle([]);
     let range = 200;
     let route = [];
-
+    
     map.on('click', function(e) {
       clickPosition = e.latlng;
-      console.log(clickPosition);
       radiusLocations(clickPosition, range);
     })
     
-
     //Condición de Calendario
     window.addEventListener('load', function () {
       datainicio = document.getElementById('IHist')
@@ -116,7 +119,7 @@
         }
       });
     });
-
+    
     //Detecta cambios en los calendarios
     function changehist() {
       enviarhist()
@@ -129,8 +132,6 @@
       datafin = document.getElementById('FHist').value;
       datainicio = datainicio.toString();
       datafin = datafin.toString();
-      console.log('datainicio= ' + datainicio);
-      console.log('datafina= ' + datafin);
       const info = { datainicio, datafin };
       const options = {
         method: 'POST',
@@ -143,21 +144,64 @@
       route = await response.json();
     }
 
+    const removePolylines = () => {
+      for (polyline of polylines) {
+        map.removeLayer(polyline.polyline);
+      }
+    }
+
+    const addPolyline = (carro) => {
+      if (carro == "Todos") {
+        for (const polyline of polylines) {
+          polyline.polyline.addTo(map);
+        }
+        return;
+      }
+      const polyline = polylines.filter(polyline => polyline.user == carro);
+      console.log(polyline)
+      polyline[0].polyline.addTo(map);
+    }
+
     const routec = document.getElementById('coordinates')
     const getdatac = async () => {
-      console.log("hola")
-      // let text = "<table border='1'>"
       latlang = [];
-      for (var i = 0; i < route.length; i++) {
-        // text += "<tr><td>" + route[i].latitud + " " + route[i].longitud + "</td></tr>";
-        latlang.push([route[i].latitud, route[i].longitud]);
-      }
-      Polyline.setLatLngs(latlang);
+      
+      removePolylines();
+      polylines.forEach(polyline => {
+        polyline.polyline.setLatLngs(route
+          .filter(data => data.user == polyline.user)
+          .map(data => [data.latitud, data.longitud]));
+      });
+
+      const selectCarro = document.getElementById("carro_select");
+      const carro = selectCarro.options[selectCarro.selectedIndex].innerHTML;
+
+      addPolyline(carro);
+
       if (route.length > 0) {
         map.setView([route[0].latitud, route[0].longitud], 13);
       }
-      // text += "</table>"
-      // routec.innerHTML = text;
+    }
+
+    const getRandomColor = () => {
+      return Math.floor(Math.random()*16777215).toString(16);
+    }
+
+    const getUsers = async () => {
+      const response = await fetch('/users');
+      const select = document.getElementById('carro_select');
+      const data = await response.json();
+
+      for (const [i, user] of data.users.entries()) {
+        const opt = document.createElement("option");
+        opt.value = i + 1;
+        opt.innerHTML = user; // whatever property it has
+        select.appendChild(opt);
+        polylines.push({'user': user, "polyline": L.polyline([], {'color': `#${getRandomColor()}`})});
+      }
+
+      select.addEventListener('change', getdatac);
+
     }
     
     const radiusLocations = (location, radius) => {
@@ -171,10 +215,10 @@
       const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
       const pointsInRange = route.filter((obj, index) => distanceArray[index] <= radius);
       routec.innerHTML = pointsInRange.map((obj) =>
-        `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time}</p>`).join('');
-      console.log(pointsInRange);
+        `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time} <strong>Vehículo:</strong> ${obj.user} <strong>RPM:</strong> ${obj.rpm}</p></p>`).join('');
     }
 
+    getUsers();
   </script>
 </body>
 

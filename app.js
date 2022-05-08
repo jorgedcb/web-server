@@ -146,7 +146,15 @@ app.post('/chistoric', function (req, res) {
     Coordinates = results;
   });
 });
-  
+
+app.get('/users', function (req, res) {
+  let sql = `select user from gpstable group by user `;
+  let query = db.query(sql,(err, results) => {
+    if(err) throw err;
+    res.send({'users': results.map(x => x.user)});
+  });
+});
+
 app.get('/coordinates', (req,res) => {
   res.send(Coordinates);
 });
