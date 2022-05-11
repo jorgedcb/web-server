@@ -1,225 +1,268 @@
 <!DOCTYPE html>
 
-<html lang="en" dir="ltr">
+<html dir="ltr">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <title>Históricos</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-      }
-      
-      .topnav {
-        overflow: hidden;
-        background-color: #000000;
-      }
-      
-      .topnav a {
-        float: left;
-        color: #f2f2f2;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        font-size: 17px;
-      }
-      
-      .topnav a:hover {
-        background-color: #ddd;
-        color: black;
-      }
-      
-      .topnav a.active {
-        background-color: #f3d147;
-        color: white;
-      }
-      </style>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      font-size: 16px;
+    }
 
+    .top {
+      margin-top: 5rem;
+    }
+
+    .text:hover {
+      color: #ffeb3b;
+    }
+
+    .datosScroll {
+      overflow-y: scroll;
+      height: 250px;
+      width: auto;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="topnav">
-    <a href="/">Inicio</a>
-    <a class="active" href="/historic">Históricos</a>
-    <a href="/contact">Contacto</a>
-    <a href="/about">¿Quiénes somos?</a>
-  </div>
-
-  <div class="wrapper">
-    <div class="inlineclass" id="mapid"></div>
-    <div class="inlineclass" style="text-align: center;" id="container">
-      <h1 style="text-align: center; padding-top: 15px;">Histórico de ubicación</h1>
-
-      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="IHist">Inicio:</label>
-      <input class="inlineclass" style="text-align: center;" type="datetime-local" id="IHist" onchange="changehist()"
-        name="InitialHistoric" value="2022-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
-
-      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="FHist">Fin:</label>
-      <input class="inlineclass" style="text-align: center;" type="datetime-local" id="FHist" onchange="changehist()"
-        name="FinalHistoric" value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
-
-      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="carro_select">Vehículo:</label>
-      <select name="carro" id="carro_select">
-        <option value="0">Todos</option>
-      </select>
-
-      <p id="coordinates"></p>
+  <nav style="
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    ">
+    <div class="black nav-wrapper">
+      <a class="brand-logo">
+        <span class="material-icons" style="font-size: 1.5rem; margin-left: 1rem;">
+          local_taxi
+        </i>
+      </a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a class="text" href="/">Home</a></li>
+        <li><a class="text" href="/about">About</a></li>
+        <li><a class="text" href="/contact">Contact</a></li>
+        <li><a class="text" href="/historic">Historic</a></li>
+      </ul>
     </div>
-  </div>
-  </div>
-  <div id="myMap" style="height: 600px"></div>
+  </nav>
 
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-    crossorigin=""></script>
-  <script>
+  <div class="wrapper top">
 
-    let latitud = 0;
-    let longitud = 0;
-    let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-    const marker = L.marker([0, 0]);
-    var latlang = [];
-    var PolyLineOptions = { color: 'red' };
-    const polylines = [];
-    const routeMarker = L.marker([]);
-    const rangeCircle = L.circle([]);
-    let range = 200;
-    let route = [];
-    
-    map.on('click', function(e) {
-      clickPosition = e.latlng;
-      radiusLocations(clickPosition, range);
-    })
-    
-    //Condición de Calendario
-    window.addEventListener('load', function () {
-      datainicio = document.getElementById('IHist')
-      datainicio.addEventListener('change', function () {
-        if (document.getElementById('FHist').value < this.value) {
-          document.getElementById('FHist').value = this.value;
-        }
+    <div id="container">
+      <div class="row">
+        <div class="col s4">
+          <div class="row">
+            <div class="col s12">
+              <div class="card">
+                <div class="card-content">
+                  <span class="card-title">
+                    <h5>Históricos de Datos</h5>
+                  </span>
+                  <div>
+                    <label for="IHist">Inicio:</label>
+                    <input type="datetime-local" id="IHist" onchange="changehist()" name="InitialHistoric"
+                      value="2022-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
 
-      });
-      datafin = document.getElementById('FHist')
-      datafin.addEventListener('change', function () {
-        if (document.getElementById('IHist').value > this.value) {
-          this.value = document.getElementById('IHist').value;
-        }
-      });
-    });
-    
-    //Detecta cambios en los calendarios
-    function changehist() {
-      enviarhist()
-      .then(() => getdatac());
-    }
+                    <label for="FHist">Fin:</label>
+                    <input type="datetime-local" id="FHist" onchange="changehist()" name="FinalHistoric"
+                      value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
+                  </div>
+                  <span>
+                    <a class='dropdown-trigger btn yellow black-text' href='#' data-target='dropdown1'>carro</a>
+                    <ul id='dropdown1' class='dropdown-content'>
+                      <li><a id="0" class="black-text">Todos</a></li>
+                      <li><a id="1" class="black-text">Carro 1</a></li>
+                      <li><a id="2" class="black-text">Carro 2</a></li>
+                    </ul>
+                  </span>
 
-    //Hace la consulta en app.js
-    async function enviarhist() {
-      datainicio = document.getElementById('IHist').value;
-      datafin = document.getElementById('FHist').value;
-      datainicio = datainicio.toString();
-      datafin = datafin.toString();
-      const info = { datainicio, datafin };
-      const options = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(info)
-      };
-      const response = await fetch('/chistoric', options);
-      route = await response.json();
-    }
-
-    const removePolylines = () => {
-      for (polyline of polylines) {
-        map.removeLayer(polyline.polyline);
-      }
-    }
-
-    const addPolyline = (carro) => {
-      if (carro == "Todos") {
-        for (const polyline of polylines) {
-          polyline.polyline.addTo(map);
-        }
-        return;
-      }
-      const polyline = polylines.filter(polyline => polyline.user == carro);
-      console.log(polyline)
-      polyline[0].polyline.addTo(map);
-    }
-
-    const routec = document.getElementById('coordinates')
-    const getdatac = async () => {
-      latlang = [];
-      
-      removePolylines();
-      polylines.forEach(polyline => {
-        polyline.polyline.setLatLngs(route
-          .filter(data => data.user == polyline.user)
-          .map(data => [data.latitud, data.longitud]));
-      });
-
-      const selectCarro = document.getElementById("carro_select");
-      const carro = selectCarro.options[selectCarro.selectedIndex].innerHTML;
-
-      addPolyline(carro);
-
-      if (route.length > 0) {
-        map.setView([route[0].latitud, route[0].longitud], 13);
-      }
-    }
-
-    const getRandomColor = () => {
-      return Math.floor(Math.random()*16777215).toString(16);
-    }
-
-    const getUsers = async () => {
-      const response = await fetch('/users');
-      const select = document.getElementById('carro_select');
-      const data = await response.json();
-
-      for (const [i, user] of data.users.entries()) {
-        const opt = document.createElement("option");
-        opt.value = i + 1;
-        opt.innerHTML = user; // whatever property it has
-        select.appendChild(opt);
-        polylines.push({'user': user, "polyline": L.polyline([], {'color': `#${getRandomColor()}`})});
-      }
-
-      select.addEventListener('change', getdatac);
-
-    }
-    
-    const radiusLocations = (location, radius) => {
-      routeMarker.setLatLng(location).addTo(map);
-      rangeCircle.setLatLng(location).setRadius(radius).addTo(map);
-      //para que esta este condicional?
-      if (route.length < 0) {
-        return;
-      }
-      //calcular distancias
-      const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
-      const pointsInRange = route.filter((obj, index) => distanceArray[index] <= radius);
-      routec.innerHTML = pointsInRange.map((obj) =>
-        `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time} <strong>Vehículo:</strong> ${obj.user} <strong>RPM:</strong> ${obj.rpm}</p></p>`).join('');
-    }
-
-    getUsers();
-  </script>
+                </div>
+              </div>
+              <div class="card datosScroll">
+                <div class="card-content">
+                  <span class="card-title">
+                    <h5>Datos</h5>
+                  </span>
+                  <div>
+                    <p>
+                      <b>
+                        de carro seleccionado
+                      </b>
+                    </p>
+                    <p id="coordinates"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="myMap" style="height: 100vh; z-index: 0"></div>
+      </div>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+
+<script>
+  var dropdown = document.querySelectorAll('.dropdown-trigger');
+  var instances = M.Dropdown.init(dropdown, {
+    inDuration: 300,
+    outDuration: 225,
+    constrainWidth: false,
+    gutter: 0,
+    belowOrigin: true,
+  });
+
+  let latitud = 0;
+  let longitud = 0;
+  let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  const marker = L.marker([0, 0]);
+  var latlang = [];
+  var PolyLineOptions = { color: 'red' };
+  const polylines = [];
+  const routeMarker = L.marker([]);
+  const rangeCircle = L.circle([]);
+  let range = 200;
+  let route = [];
+
+  map.on('click', function (e) {
+    clickPosition = e.latlng;
+    radiusLocations(clickPosition, range);
+  })
+
+  //Condición de Calendario
+  window.addEventListener('load', function () {
+    datainicio = document.getElementById('IHist')
+    datainicio.addEventListener('change', function () {
+      if (document.getElementById('FHist').value < this.value) {
+        document.getElementById('FHist').value = this.value;
+      }
+
+    });
+    datafin = document.getElementById('FHist')
+    datafin.addEventListener('change', function () {
+      if (document.getElementById('IHist').value > this.value) {
+        this.value = document.getElementById('IHist').value;
+      }
+    });
+  });
+
+  //Detecta cambios en los calendarios
+  function changehist() {
+    enviarhist()
+      .then(() => getdatac());
+  }
+
+  //Hace la consulta en app.js
+  async function enviarhist() {
+    datainicio = document.getElementById('IHist').value;
+    datafin = document.getElementById('FHist').value;
+    datainicio = datainicio.toString();
+    datafin = datafin.toString();
+    const info = { datainicio, datafin };
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(info)
+    };
+    const response = await fetch('/chistoric', options);
+    route = await response.json();
+  }
+
+  const removePolylines = () => {
+    for (polyline of polylines) {
+      map.removeLayer(polyline.polyline);
+    }
+  }
+
+  const addPolyline = (carro) => {
+    if (carro == "Todos") {
+      for (const polyline of polylines) {
+        polyline.polyline.addTo(map);
+      }
+      return;
+    }
+    const polyline = polylines.filter(polyline => polyline.user == carro);
+    console.log(polyline)
+    polyline[0].polyline.addTo(map);
+  }
+
+  const routec = document.getElementById('coordinates')
+  const getdatac = async () => {
+    latlang = [];
+
+    removePolylines();
+    polylines.forEach(polyline => {
+      polyline.polyline.setLatLngs(route
+        .filter(data => data.user == polyline.user)
+        .map(data => [data.latitud, data.longitud]));
+    });
+
+    const selectCarro = document.getElementById("dropdown1");
+
+    let carro = "Carro 1";
+
+    addPolyline(carro);
+
+    if (route.length > 0) {
+      map.setView([route[0].latitud, route[0].longitud], 13);
+    }
+  }
+
+  const getRandomColor = () => {
+    return Math.floor(Math.random() * 16777215).toString(16);
+  }
+
+  const getUsers = async () => {
+    const response = await fetch('/users');
+    const data = await response.json();
+    const select = document.getElementById("dropdown1");
+
+
+    for (const [i, user] of data.users.entries()) {
+      polylines.push({ 'user': user, "polyline": L.polyline([], { 'color': `#${getRandomColor()}` }) });
+    }
+
+    select.addEventListener('click', getdatac);
+
+  }
+
+  const radiusLocations = (location, radius) => {
+    routeMarker.setLatLng(location).addTo(map);
+    rangeCircle.setLatLng(location).setRadius(radius).addTo(map);
+    //para que esta este condicional?
+    if (route.length < 0) {
+      return;
+    }
+    //calcular distancias
+    const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
+    const pointsInRange = route.filter((obj, index) => distanceArray[index] <= radius);
+    routec.innerHTML = pointsInRange.map((obj) =>
+      `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time} <strong>Vehículo:</strong> ${obj.user} <strong>RPM:</strong> ${obj.rpm}</p></p>`).join('');
+  }
+
+  getUsers();
+
+</script>
 
 </html>
