@@ -1,55 +1,118 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Contact</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-size: 16px;
     }
 
-    .topnav {
-      overflow: hidden;
-      background-color: #000000;
+    .top {
+      margin-top: 5rem;
     }
 
-    .topnav a {
-      float: left;
-      color: #f2f2f2;
-      text-align: center;
-      padding: 14px 16px;
-      text-decoration: none;
-      font-size: 17px;
-    }
-
-    .topnav a:hover {
-      background-color: #ddd;
-      color: black;
-    }
-
-    .topnav a.active {
-        background-color: #f3d147;
-      color: #000000;
+    .text:hover {
+      color: #ffeb3b;
     }
   </style>
 </head>
+
 <body>
+  <nav style="
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    ">
+    <div class="black nav-wrapper">
+      <a class="brand-logo">
+        <i class="material-icons" style="font-size: 1.5rem; margin-left: 1rem;">
+          local_taxi
+        </i>
+      </a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a class="text" href="/">Home</a></li>
+        <li><a class="text" href="/about">About</a></li>
+        <li><a class="text" href="/contact">Contact</a></li>
+        <li><a class="text" href="/historic">Historic</a></li>
+      </ul>
+    </div>
+  </nav>
 
-  <div class="topnav">
-    <a href="/">Inicio</a>
-    <a href="/historic">Históricos</a>
-    <a class="active" href="/contact">Contacto</a>
-    <a href="/about">¿Quiénes somos?</a>
+  <div class="container">
+    <div class="row">
+      <div class="col s12">
+        <br>
+        <br>
+        <br>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Nulla quis lorem ut libero malesuada feugiat.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Nulla quis lorem ut libero malesuada feugiat.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">Formulario de Contacto</span>
+            <form action="/contact" method="POST">
+              <div class="input-field">
+                <input id="name" type="text" name="name" class="validate">
+                <label for="name">Nombre</label>
+              </div>
+              <div class="input-field">
+                <input id="email" type="email" name="email" class="validate">
+                <label for="email">Email</label>
+              </div>
+              <div class="input-field">
+                <textarea id="message" name="message" class="materialize-textarea"></textarea>
+                <label for="message">Mensaje</label>
+              </div>
+              <button class="btn yellow accent-4 black-text" type="submit" name="action">Enviar</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div style="padding-left:16px">
-    <h2>Top Navigation Example</h2>
-    <p>Some content..</p>
-  </div>
+  <footer>
+    <div class="container">
+      <div class="row">
+        <div class="col s12 m6">
+          <h5>
+            Contact
+          </h5>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, iusto nemo voluptates rerum in tempore
+            perferendis voluptatibus repellat voluptatum, quaerat aliquid velit provident labore nulla minima quod,
+            autem
+            porro quam?
+          </p>
+        </div>
+      </div>
+
+  </footer>
 
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var elems = document.querySelectorAll('.sidenav');
+    var instances = M.Sidenav.init(elems, options);
+  });
+</script>
+
 </html>

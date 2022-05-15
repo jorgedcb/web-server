@@ -26,6 +26,8 @@ db.connect((err) => {
 const app = express();
 app.use(express.json())
 
+app.use(express.static(__dirname + '/public')); // para que se pueda acceder a los archivos estaticos
+
 // create table
 app.get('/creategpstable', (req, res) => {
   let sql = 'CREATE TABLE gpstable(id int AUTO_INCREMENT, latitud VARCHAR(255), longitud VARCHAR(255), time DATETIME, user VARCHAR(255), PRIMARY KEY(id))';
@@ -147,7 +149,15 @@ app.post('/chistoric', function (req, res) {
     Coordinates = results;
   });
 });
-  
+
+app.get('/users', function (req, res) {
+  let sql = `select user from gpstable group by user `;
+  let query = db.query(sql,(err, results) => {
+    if(err) throw err;
+    res.send({'users': results.map(x => x.user)});
+  });
+});
+
 app.get('/coordinates', (req,res) => {
   res.send(Coordinates);
 });
