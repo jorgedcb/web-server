@@ -82,14 +82,20 @@
                       value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
                   </div>
                   <span>
-                    <a class='dropdown-trigger btn yellow black-text' href='#' data-target='dropdown1'>Seleccionar carro</a>
+                    <div class="input-field s12">
+                      <select id="carro_select">
+                        <option value="0">Todos</option>
+                      </select>
+                      <label >Vehículo:</label>
+                    </div>
+                  </span>
+                    <!-- <a class='dropdown-trigger btn yellow black-text' href='#' data-target='dropdown1'>Seleccionar carro</a>
                     <ul id='dropdown1' class='dropdown-content'>
                       <li><a id="0" class="black-text">Ambos carros</a></li>
                       <li><a id="1" class="black-text">Carro 1</a></li>
                       <li><a id="2" class="black-text">Carro 2</a></li>
-                    </ul>
+                    </ul> -->
                   </span>
-
                 </div>
               </div>
               <div class="card datosScroll">
@@ -119,6 +125,12 @@
   crossorigin=""></script>
 
 <script>
+
+  // document.addEventListener('DOMContentLoaded', function() {
+  //   var elems = document.querySelectorAll('select');
+  //   var instances = M.FormSelect.init(elems);
+  // });
+
   var dropdown = document.querySelectorAll('.dropdown-trigger');
   var instances = M.Dropdown.init(dropdown, {
     inDuration: 300,
@@ -173,95 +185,110 @@
 
   //Hace la consulta en app.js
   async function enviarhist() {
-    datainicio = document.getElementById('IHist').value;
-    datafin = document.getElementById('FHist').value;
-    datainicio = datainicio.toString();
-    datafin = datafin.toString();
-    const info = { datainicio, datafin };
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(info)
-    };
-    const response = await fetch('/chistoric', options);
-    route = await response.json();
-  }
-
-  const removePolylines = () => {
-    for (polyline of polylines) {
-      map.removeLayer(polyline.polyline);
+      datainicio = document.getElementById('IHist').value;
+      datafin = document.getElementById('FHist').value;
+      datainicio = datainicio.toString();
+      datafin = datafin.toString();
+      const info = { datainicio, datafin };
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(info)
+      };
+      const response = await fetch('/chistoric', options);
+      route = await response.json();
     }
-  }
 
-  const addPolyline = (carro) => {
-    if (carro == "Todos") {
-      for (const polyline of polylines) {
-        polyline.polyline.addTo(map);
+    const removePolylines = () => {
+      for (polyline of polylines) {
+        map.removeLayer(polyline.polyline);
       }
-      return;
-    }
-    const polyline = polylines.filter(polyline => polyline.user == carro);
-    console.log(polyline)
-    polyline[0].polyline.addTo(map);
-  }
-
-  const routec = document.getElementById('coordinates')
-  const getdatac = async () => {
-    latlang = [];
-
-    removePolylines();
-    polylines.forEach(polyline => {
-      polyline.polyline.setLatLngs(route
-        .filter(data => data.user == polyline.user)
-        .map(data => [data.latitud, data.longitud]));
-    });
-
-    const selectCarro = document.getElementById("dropdown1");
-
-    let carro = "Carro 1";
-
-    addPolyline(carro);
-
-    if (route.length > 0) {
-      map.setView([route[0].latitud, route[0].longitud], 13);
-    }
-  }
-
-  const getRandomColor = () => {
-    return Math.floor(Math.random() * 16777215).toString(16);
-  }
-
-  const getUsers = async () => {
-    const response = await fetch('/users');
-    const data = await response.json();
-    const select = document.getElementById("dropdown1");
-
-
-    for (const [i, user] of data.users.entries()) {
-      polylines.push({ 'user': user, "polyline": L.polyline([], { 'color': `#${getRandomColor()}` }) });
     }
 
-    select.addEventListener('click', getdatac);
-
-  }
-
-  const radiusLocations = (location, radius) => {
-    routeMarker.setLatLng(location).addTo(map);
-    rangeCircle.setLatLng(location).setRadius(radius).addTo(map);
-    //para que esta este condicional?
-    if (route.length < 0) {
-      return;
+    const addPolyline = (carro) => {
+      if (carro == "Todos") {
+        for (const polyline of polylines) {
+          polyline.polyline.addTo(map);
+        }
+        return;
+      }
+      const polyline = polylines.filter(polyline => polyline.user == carro);
+      console.log(polyline)
+      polyline[0].polyline.addTo(map);
     }
-    //calcular distancias
-    const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
-    const pointsInRange = route.filter((obj, index) => distanceArray[index] <= radius);
-    routec.innerHTML = pointsInRange.map((obj) =>
-      `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time} <strong>Vehículo:</strong> ${obj.user} <strong>RPM:</strong> ${obj.rpm}</p></p>`).join('');
-  }
 
-  getUsers();
+    const routec = document.getElementById('coordinates')
+    const getdatac = async () => {
+      latlang = [];
+      
+      removePolylines();
+      polylines.forEach(polyline => {
+        polyline.polyline.setLatLngs(route
+          .filter(data => data.user == polyline.user)
+          .map(data => [data.latitud, data.longitud]));
+      });
+
+      const selectCarro = document.getElementById("carro_select");
+      const carro = selectCarro.options[selectCarro.selectedIndex].innerHTML;
+
+      addPolyline(carro);
+
+      if (route.length > 0) {
+        map.setView([route[0].latitud, route[0].longitud], 13);
+      }
+    }
+
+    const getRandomColor = () => {
+      return Math.floor(Math.random()*16777215).toString(16);
+    }
+
+    const getUsers = async () => {
+      const response = await fetch('/users');
+      const select = document.getElementById('carro_select');
+      const data = await response.json();
+
+      for (const [i, user] of data.users.entries()) {
+        const opt = document.createElement("option");
+        opt.value = i + 1;
+        opt.innerHTML = user; // whatever property it has
+        select.appendChild(opt);
+        polylines.push({'user': user, "polyline": L.polyline([], {'color': `#${getRandomColor()}`})});
+      }
+
+      M.FormSelect.init(select);
+
+      select.addEventListener('change', () => {
+        getdatac();
+        const routec = document.getElementById('coordinates');
+        routec.innerHTML = "";
+      });
+
+    }
+    
+    const radiusLocations = (location, radius) => {
+      routeMarker.setLatLng(location).addTo(map);
+      rangeCircle.setLatLng(location).setRadius(radius).addTo(map);
+      //para que esta este condicional?
+      if (route.length < 0) {
+        return;
+      }
+      //calcular distancias}
+      const selectCarro = document.getElementById("carro_select");
+      const carro = selectCarro.options[selectCarro.selectedIndex].innerHTML;
+      const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
+      const pointsInRange = route.filter((obj, index) => {
+        if (distanceArray[index] <= radius) {
+          return (carro == "Todos") || (obj.user == carro);
+        }
+      });
+      routec.innerHTML = pointsInRange.map((obj) =>
+        `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time} <strong>Vehículo:</strong> ${obj.user} <strong>RPM:</strong> ${obj.rpm}</p></p>`).join('');
+    }
+
+    getUsers();
+  </script>
 
 </script>
 
