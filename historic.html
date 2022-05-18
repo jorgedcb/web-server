@@ -200,7 +200,11 @@
         polylines.push({'user': user, "polyline": L.polyline([], {'color': `#${getRandomColor()}`})});
       }
 
-      select.addEventListener('change', getdatac);
+      select.addEventListener('change', () => {
+        getdatac();
+        const routec = document.getElementById('coordinates');
+        routec.innerHTML = "";
+      });
 
     }
     
@@ -211,9 +215,15 @@
       if (route.length < 0) {
         return;
       }
-      //calcular distancias
+      //calcular distancias}
+      const selectCarro = document.getElementById("carro_select");
+      const carro = selectCarro.options[selectCarro.selectedIndex].innerHTML;
       const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
-      const pointsInRange = route.filter((obj, index) => distanceArray[index] <= radius);
+      const pointsInRange = route.filter((obj, index) => {
+        if (distanceArray[index] <= radius) {
+          return (carro == "Todos") || (obj.user == carro);
+        }
+      });
       routec.innerHTML = pointsInRange.map((obj) =>
         `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time} <strong>Vehículo:</strong> ${obj.user} <strong>RPM:</strong> ${obj.rpm}</p></p>`).join('');
     }
