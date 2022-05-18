@@ -3,210 +3,289 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <meta charset="utf-8">
     <title>TrackMapper Web</title>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-    crossorigin=""/>
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-    crossorigin=""/>
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
     <style>
-        .dropbtn {
-            background-color: #f3d147;
-            color: white;
-            padding: 6px;
-            font-size: 19.5px;
-            border: none;
-            cursor: pointer;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            font-size: 16px;
         }
-        
-        .dropbtn:hover, .dropbtn:focus {
-            background-color: #7a6e3c;
+
+        .top {
+            margin-top: 5rem;
         }
-        
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f1f1f1;
-            min-width: 160px;
-            overflow: auto;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-        
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
-        
-        .dropdown a:hover {background-color: #ddd;}
-        
-        .show {display: block;}
-    </style>
-    <style>
-        body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        }
-        
-        .topnav {
-        overflow: hidden;
-        background-color: #000000;
-        }
-        
-        .topnav a {
-        float: left;
-        color: #f2f2f2;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        font-size: 17px;
-        }
-        
-        .topnav a:hover {
-        background-color: #ddd;
-        color: black;
-        }
-        
-        .topnav a.active {
-        background-color: #f3d147;
-        color: white;
+
+        .text:hover {
+            color: #ffeb3b;
         }
     </style>
- 
+
 </head>
 
 <body>
-    <div class="topnav">
-        <a class="active" href="/">Inicio</a>
-        <a href="/historic">Históricos</a>
-        <a href="/contact">Contacto</a>
-        <a href="/about">¿Quiénes somos?</a>
-      </div>
-    <div class="row">
-        <div class="col-sm-8" style="background-color:#ffffff;"><h4 style="color:#000000;text-align: center;">Ultima ubicación registrada</h4></div>
-        <div class="col-sm-4" style="background-color:#ffffff;">
-            <div class="container">                                       
-                <div class="dropdown">
-                  <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Seleccione el carro que desea ver 
-                  <span class="caret"></span></button>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Carro 1</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Carro 2</a></li>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Carro 1 y 2</a></li>
-                  </ul>
+    <nav style="
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    ">
+        <div class="black nav-wrapper">
+            <a class="brand-logo">
+                <i class="material-icons" style="font-size: 1.5rem; margin-left: 1rem;">
+                    local_taxi
+                </i>
+            </a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a class="text" href="/">Home</a></li>
+                <li><a class="text" href="/about">About</a></li>
+                <li><a class="text" href="/contact">Contact</a></li>
+                <li><a class="text" href="/historic">Historic</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="top">
+        <div class="row ">
+            <div class="col s4">
+                <div class="row">
+                    <div class="col s12">
+                        <h5>Ultima ubicación registrada</h5>
+
+
+                        <!-- Dropdown Trigger -->
+                        <a class='dropdown-trigger btn black-text yellow' id="slt" href='#' data-target='dropdown1'>
+                            Seleccione un carro
+                        </a>
+
+
+
+                        <ul id='dropdown1' class='dropdown-content'>
+                            <li id="f1" car_selected="1"><a class="black-text">Carro 1</a></li>
+
+                            <li id="f2" car_selected="2"><a class="black-text">Carro 2</a></li>
+
+
+                            <li id="f3" car_selected="3"><a class="black-text">Ambos carros</a></li>
+                        </ul>
+
+                    </div>
+                    <div class="col s12">
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <h5>Carro 1</h5>
+                                </span>
+                                <h6 id="la1">Latitud:</h6>
+                                <h6 id="lo1">Longitud:</h6>
+                                <h6 id="ti1">Fecha y Hora:</h6>
+                                <h6 id="rpm1">RPM:</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col s12">
+                        <div class="card">
+                            <div class="card-content">
+                                <span class="card-title">
+                                    <h5>Carro 2</h5>
+                                </span>
+                                <h6 id="la2">Latitud:</h6>
+                                <h6 id="lo2">Longitud:</h6>
+                                <h6 id="ti2">Fecha y Hora:</h6>
+                                <h6 id="rpm2">RPM:</h6>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div id="myMap" style="height: 100vh; z-index: 0"></div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-1" style="background-color:#000000;"><h4 style="color:#ffffff;">Carro 1:</h4></div>
-        <div class="col-sm-3" style="background-color:#000000;"><h4 id="la1" style="color:#ffffff;">Latitud:</h4></div>
-        <div class="col-sm-3" style="background-color:#000000;"><h4 id="lo1" style="color:#ffffff;">Longuitud:</h4></div>
-        <div class="col-sm-3" style="background-color:#000000;"><h4 id="ti1" style="color:#ffffff;">Dia y fecha:</h4></div>
-        <div class="col-sm-2" style="background-color:#000000;"><h4 id="rpm1" style="color:#ffffff;">RPM:</h4></div>
-    </div>
-    <div class="row">
-        <div class="col-sm-1" style="background-color:#f3d147;"><h4 style="color:#ffffff;">Carro 2:</h4></div>
-        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="la2" style="color:#ffffff;">Latitud:</h4></div>
-        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="lo2" style="color:#ffffff;">Longuitud:</h4></div>
-        <div class="col-sm-3" style="background-color:#f3d147;"><h4 id="ti2" style="color:#ffffff;">Dia y fecha:</h4></div>
-        <div class="col-sm-2" style="background-color:#f3d147;"><h4 id="rpm2" style="color:#ffffff;">RPM:</h4></div>
-    </div>
-    
-    <div id="myMap" style="height: 600px"></div>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+
+
+</body>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-    crossorigin=""></script> 
-    <script type="text/javascript">
+    crossorigin=""></script>
+<script type="text/javascript">
+
+    var dropdown_data;
+    $(function () {
+        $("li#f1").click(function () {
+            dropdown_data = 1;
+            ejecutar();
+
+        });
+
+
+        $("li#f2").click(function () {
+            dropdown_data = 2;
+            ejecutar();
+        });
+
+
+        $("li#f3").click(function () {
+            dropdown_data = 3;
+            ejecutar();
+        });
+
+    });
+
+    function ejecutar(){
+        if (dropdown_data == 1) {
+        marker1.addTo(map);
+        map.removeLayer(marker2)
+        Polyline2.setLatLngs([])
+    }
+        else if (dropdown_data == 2) {
+        marker2.addTo(map);
+        map.removeLayer(marker1)
+        Polyline.setLatLngs([])
+    }
+        else if (dropdown_data == 3) {
+        marker1.addTo(map);
+        marker2.addTo(map);
+    }
+        else{
+        marker1.addTo(map);
+        map.removeLayer(marker2)
+    }
+
+    }
+
+    var blackIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    var yellowIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    let latitud = 0;
+    let longitud = 0;
+    let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    const marker1 = L.marker([0, 0], { icon: blackIcon });
+    const la1 = document.getElementById('la1')
+    const lo1 = document.getElementById('lo1')
+    const ti1 = document.getElementById('ti1')
+
+    var latlang = [];
+    var PolyLineOptions = { color: '#000000' };
+    var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
+
+    const getdata1 = async () => {
+        const response = await fetch('/carro1')
+        const json = await response.json()
+        latitud = parseFloat(json.latitud);
+        longitud = parseFloat(json.longitud);
+        marker1.setLatLng([latitud, longitud])
         
-        var blackIcon = new L.Icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
 
-        var yellowIcon = new L.Icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
-        });
-
-        let latitud=0;
-        let longitud=0;
-        let map = L.map('myMap').setView([11.019326, -74.8515549], 13);     
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        const marker1 = L.marker([0, 0], {icon: blackIcon});
-        const la1 = document.getElementById('la1')
-        const lo1 = document.getElementById('lo1')
-        const ti1 = document.getElementById('ti1')
-        var latlang = [];
-        var PolyLineOptions = {color: 'red'};
-        var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
-
-        const getdata1 = async() => {
-            const response = await fetch('/carro1')
-            const json = await response.json()
-            
-            latitud=parseFloat(json.latitud);
-            longitud=parseFloat(json.longitud);
-            marker1.setLatLng([latitud,longitud])
+        if (dropdown_data == 2) {
+            latlang = [];
+            Polyline.setLatLngs(latlang)
+        }
+        else {
             la1.innerHTML = `Latitud: ${json.latitud}`
             lo1.innerHTML = `Longuitud: ${json.longitud}`
-            ti1.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString()}`
+            ti1.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }))}`
             rpm1.innerHTML = `RPM: ${json.rpm}`
-            //map.setView([latitud,longitud])
+            la2.innerHTML = `Latitud: `
+            lo2.innerHTML = `Longuitud: `
+            ti2.innerHTML = `Fecha y Hora: `
+            rpm2.innerHTML = `RPM: `
             latlang.push([latitud, longitud]);
             Polyline.setLatLngs(latlang)
-        } 
-        setInterval(getdata1, 3000)
-        
-        //para carro 2
-        const marker2 = L.marker([0, 0], {icon: yellowIcon});
-        const la2 = document.getElementById('la2')
-        const lo2 = document.getElementById('lo2')
-        const ti2 = document.getElementById('ti2')
+            map.setView([latitud, longitud])
+        }
 
-        var latlang2 = [];
-        var PolyLineOptions2 = {color: '#f3d147'};
-        var Polyline2 = L.polyline(latlang2, PolyLineOptions2).addTo(map);
-        const getdata2 = async() => {
-            const response = await fetch('/carro2')
-            const json = await response.json()
-            
-            latitud=parseFloat(json.latitud);
-            longitud=parseFloat(json.longitud);
-            marker2.setLatLng([latitud,longitud])
+    }
+    setInterval(getdata1, 3000)
+
+    //para carro 2
+    const marker2 = L.marker([0, 0], { icon: yellowIcon });
+    const la2 = document.getElementById('la2')
+    const lo2 = document.getElementById('lo2')
+    const ti2 = document.getElementById('ti2')
+
+    var latlang2 = [];
+    var PolyLineOptions2 = { color: '#f3d147' };
+    var Polyline2 = L.polyline(latlang2, PolyLineOptions2).addTo(map);
+    const getdata2 = async () => {
+        const response = await fetch('/carro2')
+        const json = await response.json()
+
+        latitud = parseFloat(json.latitud);
+        longitud = parseFloat(json.longitud);
+        marker2.setLatLng([latitud, longitud])
+
+        if (dropdown_data == 1) {
+            latlang2 = [];
+            Polyline2.setLatLngs(latlang2)
+        } else if (dropdown_data == 2) {
+            la1.innerHTML = `Latitud: `
+            lo1.innerHTML = `Longuitud: `
+            ti1.innerHTML = `Fecha y Hora: `
+            rpm1.innerHTML = `RPM: `
             la2.innerHTML = `Latitud: ${json.latitud}`
             lo2.innerHTML = `Longuitud: ${json.longitud}`
-            ti2.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString()}`
+            ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
             rpm2.innerHTML = `RPM: ${json.rpm}`
-            map.setView([latitud,longitud])
             latlang2.push([latitud, longitud]);
             Polyline2.setLatLngs(latlang2)
-        } 
-        setInterval(getdata2, 3000)
-        marker1.addTo(map); 
-        marker2.addTo(map);
-    </script>       
-</body>
+            map.setView([latitud, longitud])
+        } else if (dropdown_data == 3) {
+
+            la2.innerHTML = `Latitud: ${json.latitud}`
+            lo2.innerHTML = `Longuitud: ${json.longitud}`
+            ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
+            rpm2.innerHTML = `RPM: ${json.rpm}`
+            latlang2.push([latitud, longitud]);
+            Polyline2.setLatLngs(latlang2)
+        }
+    }
+
+
+    setInterval(getdata2, 3000)
+    marker1.addTo(map);
+</script>
+<script>
+    var dropdown = document.querySelectorAll('.dropdown-trigger');
+    var instances = M.Dropdown.init(dropdown, {
+        inDuration: 300,
+        outDuration: 225,
+        constrainWidth: false,
+        gutter: 0,
+        belowOrigin: true,
+    });
+
+
+</script>

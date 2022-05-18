@@ -1,133 +1,177 @@
 <!DOCTYPE html>
 
-<html lang="en" dir="ltr">
+<html dir="ltr">
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta charset="utf-8">
   <title>Históricos</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-      }
-      
-      .topnav {
-        overflow: hidden;
-        background-color: #000000;
-      }
-      
-      .topnav a {
-        float: left;
-        color: #f2f2f2;
-        text-align: center;
-        padding: 14px 16px;
-        text-decoration: none;
-        font-size: 17px;
-      }
-      
-      .topnav a:hover {
-        background-color: #ddd;
-        color: black;
-      }
-      
-      .topnav a.active {
-        background-color: #f3d147;
-        color: white;
-      }
-      </style>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      font-size: 16px;
+    }
 
+    .top {
+      margin-top: 5rem;
+    }
+
+    .text:hover {
+      color: #ffeb3b;
+    }
+
+    .datosScroll {
+      overflow-y: scroll;
+      height: 250px;
+      width: auto;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="topnav">
-    <a href="/">Inicio</a>
-    <a class="active" href="/historic">Históricos</a>
-    <a href="/contact">Contacto</a>
-    <a href="/about">¿Quiénes somos?</a>
-  </div>
-
-  <div class="wrapper">
-    <div class="inlineclass" id="mapid"></div>
-    <div class="inlineclass" style="text-align: center;" id="container">
-      <h1 style="text-align: center; padding-top: 15px;">Histórico de ubicación</h1>
-
-      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="IHist">Inicio:</label>
-      <input class="inlineclass" style="text-align: center;" type="datetime-local" id="IHist" onchange="changehist()"
-        name="InitialHistoric" value="2022-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
-
-      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="FHist">Fin:</label>
-      <input class="inlineclass" style="text-align: center;" type="datetime-local" id="FHist" onchange="changehist()"
-        name="FinalHistoric" value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
-
-      <label class="inlineclass" style="width: 140px; padding-left: 10px;" for="carro_select">Vehículo:</label>
-      <select name="carro" id="carro_select">
-        <option value="0">Todos</option>
-      </select>
-
-      <p id="coordinates"></p>
+  <nav style="
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    ">
+    <div class="black nav-wrapper">
+      <a class="brand-logo">
+        <span class="material-icons" style="font-size: 1.5rem; margin-left: 1rem;">
+          local_taxi
+        </i>
+      </a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a class="text" href="/">Home</a></li>
+        <li><a class="text" href="/about">About</a></li>
+        <li><a class="text" href="/contact">Contact</a></li>
+        <li><a class="text" href="/historic">Historic</a></li>
+      </ul>
     </div>
-  </div>
-  </div>
-  <div id="myMap" style="height: 600px"></div>
+  </nav>
 
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-    crossorigin=""></script>
-  <script>
+  <div class="wrapper top">
 
-    let latitud = 0;
-    let longitud = 0;
-    let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-    const marker = L.marker([0, 0]);
-    var latlang = [];
-    var PolyLineOptions = { color: 'red' };
-    const polylines = [];
-    const routeMarker = L.marker([]);
-    const rangeCircle = L.circle([]);
-    let range = 200;
-    let route = [];
-    
-    map.on('click', function(e) {
-      clickPosition = e.latlng;
-      radiusLocations(clickPosition, range);
-    })
-    
-    //Condición de Calendario
-    window.addEventListener('load', function () {
-      datainicio = document.getElementById('IHist')
-      datainicio.addEventListener('change', function () {
-        if (document.getElementById('FHist').value < this.value) {
-          document.getElementById('FHist').value = this.value;
-        }
+    <div id="container">
+      <div class="row">
+        <div class="col s4">
+          <div class="row">
+            <div class="col s12">
+              <div class="card">
+                <div class="card-content">
+                  <span class="card-title">
+                    <h5>Históricos de Datos</h5>
+                  </span>
+                  <div>
+                    <label for="IHist">Inicio:</label>
+                    <input type="datetime-local" id="IHist" onchange="changehist()" name="InitialHistoric"
+                      value="2022-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
 
-      });
-      datafin = document.getElementById('FHist')
-      datafin.addEventListener('change', function () {
-        if (document.getElementById('IHist').value > this.value) {
-          this.value = document.getElementById('IHist').value;
-        }
-      });
+                    <label for="FHist">Fin:</label>
+                    <input type="datetime-local" id="FHist" onchange="changehist()" name="FinalHistoric"
+                      value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
+                  </div>
+                  <span>
+                    <a class='dropdown-trigger btn yellow black-text' href='#' data-target='dropdown1'>Seleccionar carro</a>
+                    <ul id='dropdown1' class='dropdown-content'>
+                      <li><a id="0" class="black-text">Ambos carros</a></li>
+                      <li><a id="1" class="black-text">Carro 1</a></li>
+                      <li><a id="2" class="black-text">Carro 2</a></li>
+                    </ul>
+                  </span>
+                </div>
+              </div>
+              <div class="card datosScroll">
+                <div class="card-content">
+                  <span class="card-title">
+                    <h5>Datos del carro seleccionado</h5>
+                  </span>
+                  <div>
+                    <p>
+                      <b>
+                        
+                      </b>
+                    </p>
+                    <p id="coordinates"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="myMap" style="height: 100vh; z-index: 0"></div>
+      </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+
+<script>
+  var dropdown = document.querySelectorAll('.dropdown-trigger');
+  var instances = M.Dropdown.init(dropdown, {
+    inDuration: 300,
+    outDuration: 225,
+    constrainWidth: false,
+    gutter: 0,
+    belowOrigin: true,
+  });
+
+  let latitud = 0;
+  let longitud = 0;
+  let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  const marker = L.marker([0, 0]);
+  var latlang = [];
+  var PolyLineOptions = { color: 'red' };
+  const polylines = [];
+  const routeMarker = L.marker([]);
+  const rangeCircle = L.circle([]);
+  let range = 200;
+  let route = [];
+
+  map.on('click', function (e) {
+    clickPosition = e.latlng;
+    radiusLocations(clickPosition, range);
+  })
+
+  //Condición de Calendario
+  window.addEventListener('load', function () {
+    datainicio = document.getElementById('IHist')
+    datainicio.addEventListener('change', function () {
+      if (document.getElementById('FHist').value < this.value) {
+        document.getElementById('FHist').value = this.value;
+      }
+
     });
-    
-    //Detecta cambios en los calendarios
-    function changehist() {
-      enviarhist()
-      .then(() => getdatac());
-    }
+    datafin = document.getElementById('FHist')
+    datafin.addEventListener('change', function () {
+      if (document.getElementById('IHist').value > this.value) {
+        this.value = document.getElementById('IHist').value;
+      }
+    });
+  });
 
-    //Hace la consulta en app.js
-    async function enviarhist() {
+  //Detecta cambios en los calendarios
+  function changehist() {
+    enviarhist()
+      .then(() => getdatac());
+  }
+
+  //Hace la consulta en app.js
+  async function enviarhist() {
       datainicio = document.getElementById('IHist').value;
       datafin = document.getElementById('FHist').value;
       datainicio = datainicio.toString();
@@ -230,6 +274,7 @@
 
     getUsers();
   </script>
-</body>
+
+</script>
 
 </html>
