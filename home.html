@@ -17,6 +17,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -28,10 +31,9 @@
             margin-top: 5rem;
         }
 
-        .text:hover{
+        .text:hover {
             color: #ffeb3b;
         }
-
     </style>
 
 </head>
@@ -65,17 +67,21 @@
                     <div class="col s12">
                         <h5>Ultima ubicación registrada</h5>
 
+
                         <!-- Dropdown Trigger -->
                         <a class='dropdown-trigger btn black-text yellow' id="slt" href='#' data-target='dropdown1'>
                             Seleccione un carro
                         </a>
 
-                        <!-- Dropdown Structure -->
+
+
                         <ul id='dropdown1' class='dropdown-content'>
-                            <li><a class="black-text">Carro 1</a></li>
-                            <li><a class="black-text">Carro 2</a></li>
-                            <li><a class="black-text">Carro 1 Y 2</a></li>
-           
+                            <li id="f1" car_selected="1"><a class="black-text">Carro 1</a></li>
+
+                            <li id="f2" car_selected="2"><a class="black-text">Carro 2</a></li>
+
+
+                            <li id="f3" car_selected="3"><a class="black-text">Ambos carros</a></li>
                         </ul>
 
                     </div>
@@ -83,11 +89,11 @@
                         <div class="card">
                             <div class="card-content">
                                 <span class="card-title">
-                                    Carro 1
+                                    <h5>Carro 1</h5>
                                 </span>
                                 <h6 id="la1">Latitud:</h6>
-                                <h6 id="lo1">Longuitud:</h6>
-                                <h6 id="ti1">Dia y fecha:</h6>
+                                <h6 id="lo1">Longitud:</h6>
+                                <h6 id="ti1">Fecha y Hora:</h6>
                                 <h6 id="rpm1">RPM:</h6>
                             </div>
                         </div>
@@ -96,11 +102,11 @@
                         <div class="card">
                             <div class="card-content">
                                 <span class="card-title">
-                                    Carro 2
+                                    <h5>Carro 2</h5>
                                 </span>
                                 <h6 id="la2">Latitud:</h6>
-                                <h6 id="lo2">Longuitud:</h6>
-                                <h6 id="ti2">Dia y fecha:</h6>
+                                <h6 id="lo2">Longitud:</h6>
+                                <h6 id="ti2">Fecha y Hora:</h6>
                                 <h6 id="rpm2">RPM:</h6>
                             </div>
                         </div>
@@ -112,90 +118,165 @@
     </div>
 
 
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-        crossorigin=""></script>
-    <script type="text/javascript">
+</body>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+<script type="text/javascript">
 
-        var blackIcon = new L.Icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+    var dropdown_data;
+    $(function () {
+        $("li#f1").click(function () {
+            dropdown_data = 1;
+            ejecutar();
+
         });
 
-        var yellowIcon = new L.Icon({
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41]
+
+        $("li#f2").click(function () {
+            dropdown_data = 2;
+            ejecutar();
         });
 
-        let latitud = 0;
-        let longitud = 0;
-        let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        const marker1 = L.marker([0, 0], { icon: blackIcon });
-        const la1 = document.getElementById('la1')
-        const lo1 = document.getElementById('lo1')
-        const ti1 = document.getElementById('ti1')
-        var latlang = [];
-        var PolyLineOptions = { color: 'red' };
-        var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
 
-        const getdata1 = async () => {
-            const response = await fetch('/carro1')
-            const json = await response.json()
+        $("li#f3").click(function () {
+            dropdown_data = 3;
+            ejecutar();
+        });
 
-            latitud = parseFloat(json.latitud);
-            longitud = parseFloat(json.longitud);
-            marker1.setLatLng([latitud, longitud])
-            la1.innerHTML = `Latitud: ${json.latitud}`
-            lo1.innerHTML = `Longuitud: ${json.longitud}`
-            ti1.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString()}`
-            rpm1.innerHTML = `RPM: ${json.rpm}`
-            //map.setView([latitud,longitud])
-            latlang.push([latitud, longitud]);
+    });
+
+    function ejecutar(){
+        if (dropdown_data == 1) {
+        marker1.addTo(map);
+        map.removeLayer(marker2)
+        Polyline2.setLatLngs([])
+    }
+        else if (dropdown_data == 2) {
+        marker2.addTo(map);
+        map.removeLayer(marker1)
+        Polyline.setLatLngs([])
+    }
+        else if (dropdown_data == 3) {
+        marker1.addTo(map);
+        marker2.addTo(map);
+    }
+        else{
+        marker1.addTo(map);
+        map.removeLayer(marker2)
+    }
+
+    }
+
+    var blackIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    var yellowIcon = new L.Icon({
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    let latitud = 0;
+    let longitud = 0;
+    let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    const marker1 = L.marker([0, 0], { icon: blackIcon });
+    const la1 = document.getElementById('la1')
+    const lo1 = document.getElementById('lo1')
+    const ti1 = document.getElementById('ti1')
+
+    var latlang = [];
+    var PolyLineOptions = { color: '#000000' };
+    var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
+
+    const getdata1 = async () => {
+        const response = await fetch('/carro1')
+        const json = await response.json()
+        latitud = parseFloat(json.latitud);
+        longitud = parseFloat(json.longitud);
+        marker1.setLatLng([latitud, longitud])
+        
+
+        if (dropdown_data == 2) {
+            latlang = [];
             Polyline.setLatLngs(latlang)
         }
-        setInterval(getdata1, 3000)
+        else {
+            la1.innerHTML = `Latitud: ${json.latitud}`
+            lo1.innerHTML = `Longuitud: ${json.longitud}`
+            ti1.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }))}`
+            rpm1.innerHTML = `RPM: ${json.rpm}`
+            la2.innerHTML = `Latitud: `
+            lo2.innerHTML = `Longuitud: `
+            ti2.innerHTML = `Fecha y Hora: `
+            rpm2.innerHTML = `RPM: `
+            latlang.push([latitud, longitud]);
+            Polyline.setLatLngs(latlang)
+            map.setView([latitud, longitud])
+        }
 
-        //para carro 2
-        const marker2 = L.marker([0, 0], { icon: yellowIcon });
-        const la2 = document.getElementById('la2')
-        const lo2 = document.getElementById('lo2')
-        const ti2 = document.getElementById('ti2')
+    }
+    setInterval(getdata1, 3000)
 
-        var latlang2 = [];
-        var PolyLineOptions2 = { color: '#f3d147' };
-        var Polyline2 = L.polyline(latlang2, PolyLineOptions2).addTo(map);
-        const getdata2 = async () => {
-            const response = await fetch('/carro2')
-            const json = await response.json()
+    //para carro 2
+    const marker2 = L.marker([0, 0], { icon: yellowIcon });
+    const la2 = document.getElementById('la2')
+    const lo2 = document.getElementById('lo2')
+    const ti2 = document.getElementById('ti2')
 
-            latitud = parseFloat(json.latitud);
-            longitud = parseFloat(json.longitud);
-            marker2.setLatLng([latitud, longitud])
+    var latlang2 = [];
+    var PolyLineOptions2 = { color: '#f3d147' };
+    var Polyline2 = L.polyline(latlang2, PolyLineOptions2).addTo(map);
+    const getdata2 = async () => {
+        const response = await fetch('/carro2')
+        const json = await response.json()
+
+        latitud = parseFloat(json.latitud);
+        longitud = parseFloat(json.longitud);
+        marker2.setLatLng([latitud, longitud])
+
+        if (dropdown_data == 1) {
+            latlang2 = [];
+            Polyline2.setLatLngs(latlang2)
+        } else if (dropdown_data == 2) {
+            la1.innerHTML = `Latitud: `
+            lo1.innerHTML = `Longuitud: `
+            ti1.innerHTML = `Fecha y Hora: `
+            rpm1.innerHTML = `RPM: `
             la2.innerHTML = `Latitud: ${json.latitud}`
             lo2.innerHTML = `Longuitud: ${json.longitud}`
-            ti2.innerHTML = `Dia y fecha: ${new Date(json.time).toLocaleString()}`
+            ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
             rpm2.innerHTML = `RPM: ${json.rpm}`
+            latlang2.push([latitud, longitud]);
+            Polyline2.setLatLngs(latlang2)
             map.setView([latitud, longitud])
+        } else if (dropdown_data == 3) {
+
+            la2.innerHTML = `Latitud: ${json.latitud}`
+            lo2.innerHTML = `Longuitud: ${json.longitud}`
+            ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
+            rpm2.innerHTML = `RPM: ${json.rpm}`
             latlang2.push([latitud, longitud]);
             Polyline2.setLatLngs(latlang2)
         }
-        setInterval(getdata2, 3000)
-        marker1.addTo(map);
-        marker2.addTo(map);
-    </script>
-</body>
+    }
 
+
+    setInterval(getdata2, 3000)
+    marker1.addTo(map);
+</script>
 <script>
     var dropdown = document.querySelectorAll('.dropdown-trigger');
     var instances = M.Dropdown.init(dropdown, {

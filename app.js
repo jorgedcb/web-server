@@ -73,19 +73,18 @@ app.get('/update', (req,res) => {
 });
 
 app.get('/additem', (req, res) => {
-  datagps = "11.0241-74.8370;02-05-2022 11:11:11;rpm;carro".split(";")
+  datagps = "11.0241-74.8370;02-05-2022 11:11:11;5000;Carro 2".split(";")
   var t = datagps[1].split(' ');
-  var d = t[0];
-  var day = d.split("-").reverse().join("-");
-  var time = day + " " +t[1];
-  var rpm = datagps[2]
-  //var user = datagps[2]
-  console.log(time)
-  var coordenadas = datagps[0].split('-')
-  var user = 'Carro 2';
-  let lon = '-';
-  let long = lon.concat(coordenadas[1]);
-  let post = {latitud:coordenadas[0], longitud:long, time:time, user:user, rpm:'No info'};
+    var d = t[0];
+    var day = d.split("-").reverse().join("-");
+    var time = day + " " +t[1];
+    console.log(time)
+    var coordenadas = datagps[0].split('-')
+    var user = datagps[3]
+    var rpm = datagps[2]
+    let lon = '-';
+    let long = lon.concat(coordenadas[1]);
+    let post = {latitud:coordenadas[0], longitud:long, time:time, user:user, rpm:rpm};
   console.log(post)
   let sql = 'INSERT INTO gpstable set ?';
   let query = db.query(sql, post,(err, result) => {
@@ -114,7 +113,7 @@ socket.on('message', function (msg, info){
     var time = day + " " +t[1];
     console.log(time)
     var coordenadas = datagps[0].split('-')
-    var user = 'Carro 1';
+    var user = datagps[3]
     var rpm = datagps[2]
     let lon = '-';
     let long = lon.concat(coordenadas[1]);
