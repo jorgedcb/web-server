@@ -216,11 +216,11 @@
         }
         else {
             la1.innerHTML = `Latitud: ${json.latitud}`
-            lo1.innerHTML = `Longuitud: ${json.longitud}`
+            lo1.innerHTML = `Longitud: ${json.longitud}`
             ti1.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }))}`
             rpm1.innerHTML = `RPM: ${json.rpm}`
             la2.innerHTML = `Latitud: `
-            lo2.innerHTML = `Longuitud: `
+            lo2.innerHTML = `Longitud: `
             ti2.innerHTML = `Fecha y Hora: `
             rpm2.innerHTML = `RPM: `
             latlang.push([latitud, longitud]);
@@ -253,11 +253,11 @@
             Polyline2.setLatLngs(latlang2)
         } else if (dropdown_data == 2) {
             la1.innerHTML = `Latitud: `
-            lo1.innerHTML = `Longuitud: `
+            lo1.innerHTML = `Longitud: `
             ti1.innerHTML = `Fecha y Hora: `
             rpm1.innerHTML = `RPM: `
             la2.innerHTML = `Latitud: ${json.latitud}`
-            lo2.innerHTML = `Longuitud: ${json.longitud}`
+            lo2.innerHTML = `Longitud: ${json.longitud}`
             ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
             rpm2.innerHTML = `RPM: ${json.rpm}`
             latlang2.push([latitud, longitud]);
@@ -266,7 +266,7 @@
         } else if (dropdown_data == 3) {
 
             la2.innerHTML = `Latitud: ${json.latitud}`
-            lo2.innerHTML = `Longuitud: ${json.longitud}`
+            lo2.innerHTML = `Longitud: ${json.longitud}`
             ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
             rpm2.innerHTML = `RPM: ${json.rpm}`
             latlang2.push([latitud, longitud]);
