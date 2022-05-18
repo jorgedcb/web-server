@@ -82,12 +82,19 @@
                       value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
                   </div>
                   <span>
-                    <a class='dropdown-trigger btn yellow black-text' href='#' data-target='dropdown1'>Seleccionar carro</a>
+                    <div class="input-field s12">
+                      <select id="carro_select">
+                        <option value="0">Todos</option>
+                      </select>
+                      <label >Vehículo:</label>
+                    </div>
+                  </span>
+                    <!-- <a class='dropdown-trigger btn yellow black-text' href='#' data-target='dropdown1'>Seleccionar carro</a>
                     <ul id='dropdown1' class='dropdown-content'>
                       <li><a id="0" class="black-text">Ambos carros</a></li>
                       <li><a id="1" class="black-text">Carro 1</a></li>
                       <li><a id="2" class="black-text">Carro 2</a></li>
-                    </ul>
+                    </ul> -->
                   </span>
                 </div>
               </div>
@@ -118,6 +125,12 @@
   crossorigin=""></script>
 
 <script>
+
+  // document.addEventListener('DOMContentLoaded', function() {
+  //   var elems = document.querySelectorAll('select');
+  //   var instances = M.FormSelect.init(elems);
+  // });
+
   var dropdown = document.querySelectorAll('.dropdown-trigger');
   var instances = M.Dropdown.init(dropdown, {
     inDuration: 300,
@@ -243,6 +256,8 @@
         select.appendChild(opt);
         polylines.push({'user': user, "polyline": L.polyline([], {'color': `#${getRandomColor()}`})});
       }
+
+      M.FormSelect.init(select);
 
       select.addEventListener('change', () => {
         getdatac();
