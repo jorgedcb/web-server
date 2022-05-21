@@ -1,14 +1,14 @@
-*{
-    margin:0;
+* {
+    margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body{
+body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-section{
+section {
     height: 650px;
     display: flex;
     justify-content: space-evenly;
@@ -17,21 +17,21 @@ section{
     background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
 }
 
-section h2{
+section h2 {
     font-size: 50px;
     font-weight: 500;
     margin-bottom: 5px;
 }
 
-section p{
+section p {
     margin-bottom: 15px;
 }
 
-section img{
+section img {
     height: 60%;
 }
 
-.cta{
+.cta {
     display: inline-block;
     padding: 7px 0;
     width: 100px;
@@ -43,20 +43,20 @@ section img{
     background: #ffffff;
 }
 
-.modal-container{
+.modal-container {
     position: fixed;
     z-index: 1000;
     width: 100%;
     height: 100vh;
     top: 0;
-    left: 0;    
+    left: 0;
     background: #000000;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.modal{
+.modal {
     width: 40%;
     height: 50%;
     background: #ffffff;
@@ -66,11 +66,49 @@ section img{
     /*overflow: hidden;*/
 }
 
-.modal > img{
+.modal>img {
     height: 50%;
 }
-h1, h2, h3, h4, h5, h6 {
 
-    font-weight:100;
-  
-  }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 100;
+}
+
+br {
+    margin: 10px 0;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #04AA6D;
+    cursor: pointer;
+}
