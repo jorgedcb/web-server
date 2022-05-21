@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
+  <link rel="stylesheet" href="estilo.css">
   <style>
     * {
       box-sizing: border-box;
@@ -91,14 +92,18 @@
                   </span>
                 </div>
               </div>
-              <div class="card-content">
-                <span class="card-title">
-                  <h5>Datos del carro seleccionado</h5>
-                </span>
-                <p id="index"></p>
-                <p id="demo"></p>
-                <div class="slidecontainer">
-                  <input type="range" min="1" max="1" value="1" class="slider" id="myRange">
+              <div class="card">
+                <div class="card-content">
+                  <span class="card-title">
+                    <h5>Datos del carro seleccionado</h5>
+                  </span>
+                  <div>
+                    <p id="index"></p>
+                    <p id="demo"></p>
+                    <div class="slidecontainer">
+                      <input type="range" min="1" max="1" value="1" class="slider" id="myRange">
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -106,12 +111,14 @@
         </div>
         <div id="myMap" style="height: 100vh; z-index: 0"></div>
       </div>
+    </div>
+  </div>
 </body>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
   crossorigin=""></script>
-
 <script>
   var dropdown = document.querySelectorAll('.dropdown-trigger');
   var instances = M.Dropdown.init(dropdown, {
@@ -267,7 +274,7 @@
     index = 0;
     slider.max = locations.length;
     indexobj.innerHTML = "Esta ruta tiene " + slider.max + " puntos." + " Usted se encuentra en el " + index+".";
-    output.innerHTML = `<p> <br></br> <strong>Timestamp:</strong> ${locations[index].time} <br></br> <strong>Vehículo:</strong> ${locations[index].user} <br></br> <strong>RPM:</strong> ${locations[index].rpm}.</p></p>`
+    output.innerHTML = `<p><br></br><strong>Timestamp:</strong> ${locations[index].time} <strong>Vehículo:</strong> ${locations[index].user} <strong>RPM:</strong> ${locations[index].rpm}.</p></p>`
   })
 
   const radiusLocations = (location, radius) => {
@@ -292,7 +299,7 @@
   slider.addEventListener('change', function () {
     index = parseInt(slider.value);
     indexobj.innerHTML = "Esta ruta tiene " + slider.max + " puntos\n Usted está en el " + index+".";
-    output.innerHTML = `<p> <br></br> <strong>Timestamp:</strong> ${locations[index].time} <br></br> <strong>Vehículo:</strong> ${locations[index].user} <br></br> <strong>RPM:</strong> ${locations[index].rpm}.</p></p>`
+    output.innerHTML = `<p><br></br><strong>Timestamp:</strong> ${locations[index].time} <strong>Vehículo:</strong> ${locations[index].user} <strong>RPM:</strong> ${locations[index].rpm}.</p></p>`
     markerSlider.setLatLng([parseFloat(locations[index].latitud), parseFloat(locations[index].longitud)]);
   }, false);
 
