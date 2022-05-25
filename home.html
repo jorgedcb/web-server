@@ -50,12 +50,12 @@
                     local_taxi
                 </i>
             </a>
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">Manú</i></a>
             <ul class="right hide-on-med-and-down">
-                <li><a class="text" href="/">Home</a></li>
-                <li><a class="text" href="/about">About</a></li>
-                <li><a class="text" href="/contact">Contact</a></li>
-                <li><a class="text" href="/historic">Historic</a></li>
+                <li><a class="text" href="/">Inicio</a></li>
+                <li><a class="text" href="/historic">Históricos</a></li>
+                <li><a class="text" href="/about">Acerca de</a></li>
+                <li><a class="text" href="/contact">Contacto</a></li>
             </ul>
         </div>
     </nav>
@@ -65,7 +65,7 @@
             <div class="col s4">
                 <div class="row">
                     <div class="col s12">
-                        <h5>Ultima ubicación registrada</h5>
+                        <h5>Última ubicación registrada</h5>
 
 
                         <!-- Dropdown Trigger -->
@@ -73,14 +73,10 @@
                             Seleccione un carro
                         </a>
 
-
-
+                        <!-- Options -->
                         <ul id='dropdown1' class='dropdown-content'>
                             <li id="f1" car_selected="1"><a class="black-text">Carro 1</a></li>
-
                             <li id="f2" car_selected="2"><a class="black-text">Carro 2</a></li>
-
-
                             <li id="f3" car_selected="3"><a class="black-text">Ambos carros</a></li>
                         </ul>
 
@@ -124,49 +120,28 @@
     crossorigin=""></script>
 <script type="text/javascript">
 
-    var dropdown_data;
-    $(function () {
+    var dropdown_data = 0;
+    $(document).ready(function () {
         $("li#f1").click(function () {
             dropdown_data = 1;
-            ejecutar();
-
+            marker1.addTo(map);
+            map.removeLayer(marker2);
+            Polyline2.setLatLngs([]);
         });
-
 
         $("li#f2").click(function () {
             dropdown_data = 2;
-            ejecutar();
+            marker2.addTo(map);
+            map.removeLayer(marker1);
+            Polyline.setLatLngs([]);
         });
-
 
         $("li#f3").click(function () {
             dropdown_data = 3;
-            ejecutar();
+            marker1.addTo(map);
+            marker2.addTo(map);
         });
-
     });
-
-    function ejecutar(){
-        if (dropdown_data == 1) {
-        marker1.addTo(map);
-        map.removeLayer(marker2)
-        Polyline2.setLatLngs([])
-    }
-        else if (dropdown_data == 2) {
-        marker2.addTo(map);
-        map.removeLayer(marker1)
-        Polyline.setLatLngs([])
-    }
-        else if (dropdown_data == 3) {
-        marker1.addTo(map);
-        marker2.addTo(map);
-    }
-        else{
-        marker1.addTo(map);
-        map.removeLayer(marker2)
-    }
-
-    }
 
     var blackIcon = new L.Icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-black.png',
@@ -192,39 +167,37 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-    const marker1 = L.marker([0, 0], { icon: blackIcon });
-    const la1 = document.getElementById('la1')
-    const lo1 = document.getElementById('lo1')
-    const ti1 = document.getElementById('ti1')
 
+    //para carro 1
+    const marker1 = L.marker([0, 0], { icon: blackIcon });
+    const la1 = document.getElementById('la1');
+    const lo1 = document.getElementById('lo1');
+    const ti1 = document.getElementById('ti1');
     var latlang = [];
     var PolyLineOptions = { color: '#000000' };
     var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
-
     const getdata1 = async () => {
-        const response = await fetch('/carro1')
-        const json = await response.json()
+        const response = await fetch('/carro1');
+        const json = await response.json();
         latitud = parseFloat(json.latitud);
         longitud = parseFloat(json.longitud);
-        marker1.setLatLng([latitud, longitud])
-        
+        marker1.setLatLng([latitud, longitud]);
 
         if (dropdown_data == 2) {
+            la1.innerHTML = `Latitud: `
+            lo1.innerHTML = `Longitud: `
+            ti1.innerHTML = `Fecha y Hora: `
+            rpm1.innerHTML = `RPM: `
             latlang = [];
-            Polyline.setLatLngs(latlang)
-        }
-        else {
+            Polyline.setLatLngs(latlang);
+        } else {
             la1.innerHTML = `Latitud: ${json.latitud}`
-            lo1.innerHTML = `Longuitud: ${json.longitud}`
+            lo1.innerHTML = `Longitud: ${json.longitud}`
             ti1.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }))}`
             rpm1.innerHTML = `RPM: ${json.rpm}`
-            la2.innerHTML = `Latitud: `
-            lo2.innerHTML = `Longuitud: `
-            ti2.innerHTML = `Fecha y Hora: `
-            rpm2.innerHTML = `RPM: `
             latlang.push([latitud, longitud]);
-            Polyline.setLatLngs(latlang)
-            map.setView([latitud, longitud])
+            Polyline.setLatLngs(latlang);
+            map.setView([latitud, longitud]);
         }
 
     }
@@ -232,52 +205,43 @@
 
     //para carro 2
     const marker2 = L.marker([0, 0], { icon: yellowIcon });
-    const la2 = document.getElementById('la2')
-    const lo2 = document.getElementById('lo2')
-    const ti2 = document.getElementById('ti2')
-
+    const la2 = document.getElementById('la2');
+    const lo2 = document.getElementById('lo2');
+    const ti2 = document.getElementById('ti2');
     var latlang2 = [];
     var PolyLineOptions2 = { color: '#f3d147' };
     var Polyline2 = L.polyline(latlang2, PolyLineOptions2).addTo(map);
     const getdata2 = async () => {
-        const response = await fetch('/carro2')
-        const json = await response.json()
-
+        const response = await fetch('/carro2');
+        const json = await response.json();
         latitud = parseFloat(json.latitud);
         longitud = parseFloat(json.longitud);
-        marker2.setLatLng([latitud, longitud])
+        marker2.setLatLng([latitud, longitud]);
 
         if (dropdown_data == 1) {
+            la2.innerHTML = `Latitud: `
+            lo2.innerHTML = `Longitud: `
+            ti2.innerHTML = `Fecha y Hora: `
+            rpm2.innerHTML = `RPM: `
             latlang2 = [];
-            Polyline2.setLatLngs(latlang2)
-        } else if (dropdown_data == 2) {
-            la1.innerHTML = `Latitud: `
-            lo1.innerHTML = `Longuitud: `
-            ti1.innerHTML = `Fecha y Hora: `
-            rpm1.innerHTML = `RPM: `
+            Polyline2.setLatLngs(latlang2);
+        } else {
             la2.innerHTML = `Latitud: ${json.latitud}`
-            lo2.innerHTML = `Longuitud: ${json.longitud}`
+            lo2.innerHTML = `Longitud: ${json.longitud}`
             ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
             rpm2.innerHTML = `RPM: ${json.rpm}`
             latlang2.push([latitud, longitud]);
-            Polyline2.setLatLngs(latlang2)
-            map.setView([latitud, longitud])
-        } else if (dropdown_data == 3) {
-
-            la2.innerHTML = `Latitud: ${json.latitud}`
-            lo2.innerHTML = `Longuitud: ${json.longitud}`
-            ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
-            rpm2.innerHTML = `RPM: ${json.rpm}`
-            latlang2.push([latitud, longitud]);
-            Polyline2.setLatLngs(latlang2)
+            Polyline2.setLatLngs(latlang2);
         }
     }
-
-
     setInterval(getdata2, 3000)
+
     marker1.addTo(map);
+    marker2.addTo(map);
+
 </script>
 <script>
+    //Tiempos del dropdown
     var dropdown = document.querySelectorAll('.dropdown-trigger');
     var instances = M.Dropdown.init(dropdown, {
         inDuration: 300,
@@ -286,6 +250,4 @@
         gutter: 0,
         belowOrigin: true,
     });
-
-
 </script>
