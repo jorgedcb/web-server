@@ -50,12 +50,12 @@
                     local_taxi
                 </i>
             </a>
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">Manú</i></a>
             <ul class="right hide-on-med-and-down">
-                <li><a class="text" href="/">Home</a></li>
-                <li><a class="text" href="/about">About</a></li>
-                <li><a class="text" href="/contact">Contact</a></li>
-                <li><a class="text" href="/historic">Historic</a></li>
+                <li><a class="text" href="/">Inicio</a></li>
+                <li><a class="text" href="/historic">Históricos</a></li>
+                <li><a class="text" href="/about">Acerca de</a></li>
+                <li><a class="text" href="/contact">Contacto</a></li>
             </ul>
         </div>
     </nav>
@@ -65,7 +65,7 @@
             <div class="col s4">
                 <div class="row">
                     <div class="col s12">
-                        <h5>Ultima ubicación registrada</h5>
+                        <h5>Última ubicación registrada</h5>
 
 
                         <!-- Dropdown Trigger -->
@@ -174,7 +174,7 @@
     const lo1 = document.getElementById('lo1');
     const ti1 = document.getElementById('ti1');
     var latlang = [];
-    var PolyLineOptions = {color: '#000000'};
+    var PolyLineOptions = { color: '#000000' };
     var Polyline = L.polyline(latlang, PolyLineOptions).addTo(map);
     const getdata1 = async () => {
         const response = await fetch('/carro1');
@@ -182,15 +182,15 @@
         latitud = parseFloat(json.latitud);
         longitud = parseFloat(json.longitud);
         marker1.setLatLng([latitud, longitud]);
-    
-        if(dropdown_data == 2){
+
+        if (dropdown_data == 2) {
             la1.innerHTML = `Latitud: `
             lo1.innerHTML = `Longitud: `
             ti1.innerHTML = `Fecha y Hora: `
             rpm1.innerHTML = `RPM: `
             latlang = [];
             Polyline.setLatLngs(latlang);
-        }else{
+        } else {
             la1.innerHTML = `Latitud: ${json.latitud}`
             lo1.innerHTML = `Longitud: ${json.longitud}`
             ti1.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }))}`
@@ -209,7 +209,7 @@
     const lo2 = document.getElementById('lo2');
     const ti2 = document.getElementById('ti2');
     var latlang2 = [];
-    var PolyLineOptions2 = {color: '#f3d147'};
+    var PolyLineOptions2 = { color: '#f3d147' };
     var Polyline2 = L.polyline(latlang2, PolyLineOptions2).addTo(map);
     const getdata2 = async () => {
         const response = await fetch('/carro2');
@@ -218,14 +218,14 @@
         longitud = parseFloat(json.longitud);
         marker2.setLatLng([latitud, longitud]);
 
-        if(dropdown_data == 1){
+        if (dropdown_data == 1) {
             la2.innerHTML = `Latitud: `
             lo2.innerHTML = `Longitud: `
             ti2.innerHTML = `Fecha y Hora: `
             rpm2.innerHTML = `RPM: `
             latlang2 = [];
             Polyline2.setLatLngs(latlang2);
-        }else{
+        } else {
             la2.innerHTML = `Latitud: ${json.latitud}`
             lo2.innerHTML = `Longitud: ${json.longitud}`
             ti2.innerHTML = `Fecha y Hora: ${new Date(json.time).toLocaleString()}`
