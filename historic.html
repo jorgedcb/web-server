@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin="" />
+  <link rel="stylesheet" href="estilo.css">
   <style>
     * {
       box-sizing: border-box;
@@ -24,6 +25,10 @@
 
     .top {
       margin-top: 5rem;
+    }
+
+    .contenido{
+      height: 400px;
     }
 
     .text:hover {
@@ -50,19 +55,17 @@
           local_taxi
           </i>
       </a>
-      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">Manú</i></a>
       <ul class="right hide-on-med-and-down">
-        <li><a class="text" href="/">Home</a></li>
-        <li><a class="text" href="/historic">Historic</a></li>
-        <li><a class="text" href="/about">About</a></li>
-        <li><a class="text" href="/contact">Contact</a></li>
-
+        <li><a class="text" href="/">Inicio</a></li>
+        <li><a class="text" href="/historic">Históricos</a></li>
+        <li><a class="text" href="/about">Acerca de</a></li>
+        <li><a class="text" href="/contact">Contacto</a></li>
       </ul>
     </div>
   </nav>
 
   <div class="wrapper top">
-
     <div id="container">
       <div class="row">
         <div class="col s4">
@@ -83,29 +86,25 @@
                       value="2023-01-01T00:00" min="2021-06-01T00:00" max="2044-06-01T00:00">
                   </div>
                   <span>
-                    <a class='dropdown-trigger btn yellow black-text' href='#' data-target='dropdown1'>Seleccionar
-                      carro</a>
-                    <ul id='dropdown1' class='dropdown-content'>
-                      <li><a id="0" class="black-text">Ambos carros</a></li>
-                      <li><a id="1" class="black-text">Carro 1</a></li>
-                      <li><a id="2" class="black-text">Carro 2</a></li>
-                    </ul>
+                    <div class="input-field s12">
+                      <select id="carro_select">
+                        <option value="0">Todos</option>
+                      </select>
+                      <label>Vehículo:</label>
+                    </div>
                   </span>
-
+                  </span>
                 </div>
               </div>
-              <div class="card datosScroll">
+              <div class="card contenido">
                 <div class="card-content">
                   <span class="card-title">
                     <h5>Datos del carro seleccionado</h5>
                   </span>
                   <div>
-                    <p>
-                      <b>
-
-                      </b>
-                    </p>
-                    <p id="coordinates"></p>
+                    <p id="index"></p>
+                    <p id="demo"></p>
+		    <input type="range" min="1" max="1" value="1" id="myRange">
                   </div>
                 </div>
               </div>
@@ -114,12 +113,14 @@
         </div>
         <div id="myMap" style="height: 100vh; z-index: 0"></div>
       </div>
+    </div>
+  </div>
 </body>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
   crossorigin=""></script>
-
 <script>
   var dropdown = document.querySelectorAll('.dropdown-trigger');
   var instances = M.Dropdown.init(dropdown, {
@@ -144,11 +145,18 @@
   const rangeCircle = L.circle([]);
   let range = 200;
   let route = [];
+  var locations;
 
-  map.on('click', function (e) {
-    clickPosition = e.latlng;
-    radiusLocations(clickPosition, range);
-  })
+  var yellowIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
+
+  const markerSlider = L.marker([0, 0], { icon: yellowIcon });
 
   //Condición de Calendario
   window.addEventListener('load', function () {
@@ -220,9 +228,8 @@
         .map(data => [data.latitud, data.longitud]));
     });
 
-    const selectCarro = document.getElementById("dropdown1");
-
-    let carro = "Carro 1";
+    const selectCarro = document.getElementById("carro_select");
+    const carro = selectCarro.options[selectCarro.selectedIndex].innerHTML;
 
     addPolyline(carro);
 
@@ -237,17 +244,40 @@
 
   const getUsers = async () => {
     const response = await fetch('/users');
+    const select = document.getElementById('carro_select');
     const data = await response.json();
-    const select = document.getElementById("dropdown1");
-
 
     for (const [i, user] of data.users.entries()) {
+      const opt = document.createElement("option");
+      opt.value = i + 1;
+      opt.innerHTML = user; // whatever property it has
+      select.appendChild(opt);
       polylines.push({ 'user': user, "polyline": L.polyline([], { 'color': `#${getRandomColor()}` }) });
     }
 
-    select.addEventListener('click', getdatac);
+    M.FormSelect.init(select);
+
+    select.addEventListener('change', () => {
+      getdatac();
+      const routec = document.getElementById('coordinates');
+      routec.innerHTML = "";
+    });
 
   }
+
+  var slider = document.getElementById("myRange");
+  var output = document.getElementById("demo");
+  var indexobj = document.getElementById("index");
+  var index;
+
+  map.on('click', function (e) {
+    clickPosition = e.latlng;
+    locations = radiusLocations(clickPosition, range);
+    index = 0;
+    slider.max = locations.length;
+    indexobj.innerHTML = "Esta ruta tiene " + slider.max + " puntos." + " Usted se encuentra en el " + index+".";
+    output.innerHTML = `<p><br><strong>Timestamp:</strong> ${locations[index].time} <br><strong>Vehículo:</strong> ${locations[index].user}<br><strong>RPM:</strong> ${locations[index].rpm}.</p></p>`
+  })
 
   const radiusLocations = (location, radius) => {
     routeMarker.setLatLng(location).addTo(map);
@@ -256,14 +286,28 @@
     if (route.length < 0) {
       return;
     }
-    //calcular distancias
+    //calcular distancias}
+    const selectCarro = document.getElementById("carro_select");
+    const carro = selectCarro.options[selectCarro.selectedIndex].innerHTML;
     const distanceArray = route.map((obj) => map.distance([obj.latitud, obj.longitud], location));
-    const pointsInRange = route.filter((obj, index) => distanceArray[index] <= radius);
-    routec.innerHTML = pointsInRange.map((obj) =>
-      `<p><strong>Latitud:</strong> ${obj.latitud} <strong>Longitud:</strong> ${obj.longitud} <strong>Timestamp:</strong> ${obj.time} <strong>Vehículo:</strong> ${obj.user} <strong>RPM:</strong> ${obj.rpm}</p></p>`).join('');
+    const pointsInRange = route.filter((obj, index) => {
+      if (distanceArray[index] <= radius) {
+        return (carro == "Todos") || (obj.user == carro);
+      }
+    });
+    return pointsInRange;
   }
 
+  slider.addEventListener('change', function () {
+    index = parseInt(slider.value);
+    indexobj.innerHTML = "Esta ruta tiene " + slider.max + " puntos\n Usted está en el " + index+".";
+    output.innerHTML = `<p><br><strong>Timestamp:</strong> ${locations[index].time} <br><strong>Vehículo:</strong> ${locations[index].user} <br><strong>RPM:</strong> ${locations[index].rpm}.</p></p>`
+    markerSlider.setLatLng([parseFloat(locations[index].latitud), parseFloat(locations[index].longitud)]);
+  }, false);
+
   getUsers();
+
+</script>
 
 </script>
 
