@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>TrackMapper Web</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .top {
+            margin-top: 5rem;
+        }
+
+        .text:hover {
+            color: #ffeb3b;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav style="
+    position: fixed;
+    top: 0;
+    z-index: 2;
+    ">
+        <div class="black nav-wrapper">
+            <a class="brand-logo">
+                <i class="material-icons" style="font-size: 1.5rem; margin-left: 1rem;">
+                    local_taxi
+                </i>
+            </a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">Manú</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/admin">Admin</a></li>
+                <li><a class="text" href="/">Inicio</a></li>
+                <li><a class="text" href="/historic">Históricos</a></li>
+                <li><a class="text" href="/about">Acerca de</a></li>
+                <li><a class="text" href="/contact">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="top">
+        <div class="row ">
+            <div class="col s4">
+                <div class="row">
+                    <div class="col s12">
+                        <h5 style="border-bottom:1px solid gray;">Última ubicación registrada</h5>
+                    </div>
+                    <div class="realtime_data-container container-fluid"
+                    style="height:600px; border:1px solid black; border-radius:5px; overflow:auto"
+                    ></div>
+                </div>
+            </div>
+            <div id="myMap" style="height: 100vh; z-index: 0"></div>
+        </div>
+    </div>
+
+
+</body>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+<script type="text/javascript">
+    const container = document.querySelector('.realtime_data-container');
+
+    let map = L.map('myMap').setView([11.019326, -74.8515549], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    //para carro 1
+    var markers = new Array();
+    var polylines = new Array();
+    var coords = new Array();
+
+    function getdata() {
+        const children = container.children;
+        var http = new XMLHttpRequest();
+        http.open('GET', '/realtime');
+        http.onreadystatechange = function() {
+            if(http.readyState == 4 && http.status == 200) {
+                const resp = JSON.parse(http.responseText);
+                separateCoords(resp.data);
+                createPolylines();
+                for(var data of resp.data) {
+                    var found = false;
+                    for(var child of children) {
+                        if(child.getAttribute('data-placa') == data.user) {
+                            child.querySelector('.latitude').innerHTML = 'Latitud: ' + data.latitud;
+                            child.querySelector('.longitude').innerHTML = 'Longitud: ' + data.longitud;
+                            child.querySelector('.datetime').innerHTML = 'Fecha y Hora: ' + new Date(data.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }));
+                            child.querySelector('.rpm').innerHTML = 'RPM: ' + data.rpm;
+
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(found == false) {
+                        const bubble = createCard(data);
+                        container.appendChild(bubble);
+                    }
+                }
+            }else {
+                console.log(`status: ${http.status}`)
+                console.log(`readyState: ${http.readyState}`)
+            }
+        }
+        http.send(null);
+    }
+    setInterval(getdata, 3000)
+
+    function separateCoords(data) {
+        console.log(data);
+        for(var item of data) {
+            var found  = false;
+            console.log(coords);
+            for(var coord of coords) {
+                if(coord.user == item.user) {
+                    coord.array.push([item.latitud, item.longitud]);
+                    found = true;
+                    break;
+                }
+            }
+            if(found == false) {
+                coords.push({user: item.user, array: [[item.latitud, item.longitud]]});
+            }
+        }
+    }
+
+    function createPolylines() {
+        for(var polyline of polylines) {
+            map.removeLayer(polyline);
+        }
+
+        for(var marker of markers) {
+            map.removeLayer(marker);
+        }
+        polylines = [];
+        markers = [];
+
+        for(var item of coords) {
+            const polyline = L.polyline(item.array).addTo(map);
+            polylines.push(polyline);
+
+            const last = item.array[item.array.length - 1];
+            const marker = L.marker(last).addTo(map);
+            markers.push(marker);
+        }
+    }
+
+    function createCard(data) {
+        const col = document.createElement('div');
+        col.className = 'col s12';
+        col.style.position = 'relative';
+        col.setAttribute('data-placa', data.user);
+
+        const title = document.createElement('span');
+        title.innerHTML = data.user;
+        title.style.position = 'absolute';
+        title.style.top = '5px'
+        title.style.width = '100%';
+        title.style.textAlign = 'center';
+        title.style.fontSize = '16px';
+        title.style.fontWeight = '700';
+        title.style.zIndex = 100;
+        col.appendChild(title);
+            const card = document.createElement('div');
+            card.className = 'card';
+                const card_content = document.createElement('div');
+                card_content.className = 'card-content';
+                    const span = document.createElement('span');
+                    span.className = 'card-title';
+                        const h5 = document.createElement('h5');
+                    span.appendChild(h5);
+                    const h61 = document.createElement('h6');
+                    h61.className = 'latitude';
+                    h61.innerHTML = 'Latitud: ' + data.latitud;
+                    const h62 = document.createElement('h6');
+                    h62.className = 'longitude';
+                    h61.innerHTML = 'Longitud: ' + data.longitud;
+                    const h63 = document.createElement('h6');
+                    h63.className = 'datetime';
+                    h63.innerHTML = 'Fecha y Hora: ' + new Date(data.time).toLocaleString(('en-GB', { timeZone: 'GMT-5' }));
+                    const rpm = document.createElement('h6');
+                    rpm.className = 'rpm';
+                    rpm.innerHTML = 'RPM: ' + data.rpm;
+                card_content.appendChild(span)
+                card_content.appendChild(h61);
+                card_content.appendChild(h62);
+                card_content.appendChild(h63);
+                card_content.appendChild(rpm);
+            card.appendChild(card_content);
+        col.appendChild(card);
+
+        return col;
+    }
+</script>
+<script>
+    //Tiempos del dropdown
+    var dropdown = document.querySelectorAll('.dropdown-trigger');
+    var instances = M.Dropdown.init(dropdown, {
+        inDuration: 300,
+        outDuration: 225,
+        constrainWidth: false,
+        gutter: 0,
+        belowOrigin: true,
+    });
+</script>

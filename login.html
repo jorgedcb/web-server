@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .masterContainer {
+            width: 100vw;
+            height: 100vh;
+
+            background: rgb(204,239,255);
+            background: linear-gradient(190deg, rgba(204,239,255,1) 0%, rgba(197,199,255,1) 100%);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loginForm {
+            padding: 50px;
+            border: 2px solid black;
+            border-radius: 10px;
+            background-color: rgba(255,255,255,0.8);
+        }
+
+        .loginForm > .title {
+            text-align: center;
+        }
+
+        .loginForm > label {
+            font-size: 16px;
+            font-weight: 550;
+        }
+
+        .loginForm > input {
+            -moz-box-sizing:content-box;
+            -webkit-box-sizing:content-box;
+            -ms-box-sizing: content-box;
+            box-sizing:content-box;
+            width: 100%;
+            height: 25px;
+            border: 1px solid gray;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        .loginForm > button {
+            -moz-box-sizing:content-box;
+            -webkit-box-sizing:content-box;
+            -ms-box-sizing: content-box;
+            box-sizing:content-box;
+
+            width: 100%;
+            height: 30px;
+            background-color: rgba(0, 14, 36, 1);
+            border: 2px solid rgb(0, 14, 36);
+            border-radius: 5px;
+            color: white;
+            font-weight: 700;
+
+            transition-property: background-color, color;
+            transition-duration: 200ms;
+        }
+
+        .loginForm > button:hover {
+            background-color: rgba(0, 14, 36, 0);
+            color: rgba(0, 14, 36, 1);
+
+            cursor: pointer;
+        }
+    </style>
+    <title>Football: Login</title>
+</head>
+<body>
+    <div id="masterContainer" class="masterContainer">
+        <form id="loginForm" class="loginForm">
+            <h2 class="title">Football: Login</h2>
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" class="username" required>
+            <br>
+            <br>
+            <label for="username">Password</label>
+            <input type="password" name="password" id="password" class="username" required>
+            <br>
+            <br>
+            <button class="submit_btn" type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        const login_form = document.querySelector('#loginForm');
+        const username = login_form.querySelector('#username');
+        const password = login_form.querySelector('#password');
+
+        login_form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const user = username.value;
+            const pass = password.value;
+            var http = new XMLHttpRequest();
+            http.open('POST', `/login?username=${user}&password=${pass}`);
+            http.onreadystatechange = function () {
+                if(http.readyState === 4 && http.status === 200) {
+                    const resp = JSON.parse(http.responseText);
+
+                    if(resp.status == 1) {
+                        window.location.replace('/admin');
+                    }else {
+                        alert(resp.message);
+                    }
+                }else {
+                    console.log(`http.readyState === ${http.readyState}`);
+                    console.log(`http.status === ${http.status}`);
+                }
+            }
+            http.send(null);
+        });
+    </script>
+</body>
+</html>

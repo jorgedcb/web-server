@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .masterContainer {
+            width: 100vw;
+            max-width: 100%;
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        form {
+            max-width: 250px;
+            padding: 20px;
+            box-shadow: 2px 2px 10px black;
+            border-radius: 10px
+        }
+
+        input, button {
+            -moz-box-sizing:content-box;
+            -webkit-box-sizing:content-box;
+            -ms-box-sizing: content-box;
+            box-sizing:content-box;
+
+            width: 100%;
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div id="masterContainer" class="masterContainer">
+        <form id="newUserForm">
+            <h2>Por favor ingrese la nueva placa a registrar:</h2>
+            <input type="text" id="newUser" class="newUser">
+            <br>
+            <br>
+            <button type="submit">Agregar</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById("newUserForm");
+        const placa = document.getElementById("newUser");
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            var http = new XMLHttpRequest();
+            http.open("POST", "/admin?placa=" + placa.value);
+            http.onreadystatechange = function() {
+                if(http.readyState == 4 && http.status == 200) {
+                    const resp = JSON.parse(http.responseText);
+                    if(resp.status == 1) {
+                        alert("Placa agregada con éxito!");
+                    }else {
+                        if(resp.message) {
+                            alert(resp.message);
+                        }else {
+                            alert("Ha ocurrido un error. Por favor intente nuevamente...");
+                        }
+                    }
+                }else {
+                    console.log(`status: ${http.status}`);
+                    console.log(`message: ${http.responseText}`);
+                }
+            }
+            http.send(null);
+        })
+    </script>
+</body>
+</html>
